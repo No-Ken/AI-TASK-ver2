@@ -9,6 +9,11 @@ interface MemoContext {
   messageText: string;
 }
 
+/**
+ * メモサービス
+ * LINEメッセージから自動的にメモを作成する主要機能を提供
+ * 公式LINEへのメッセージやグループトークをAIが解析してメモ化
+ */
 export class MemoService {
   private personalMemoRepo: PersonalMemoRepository;
   private sharedMemoRepo: SharedMemoRepository;

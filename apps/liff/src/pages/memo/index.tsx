@@ -578,13 +578,23 @@ export default function MemoPage() {
   return (
     <Container maxWidth="sm">
       <Box sx={{ py: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Typography variant="h5" component="h1">
-            メモ
+        <Box sx={{ mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+            <Typography variant="h5" component="h1">
+              メモ
+            </Typography>
+            <IconButton onClick={refetch} disabled={isLoading}>
+              <Refresh />
+            </IconButton>
+          </Box>
+          <Typography variant="body2" color="text.secondary">
+            LINEトークから作成されたメモを管理できます
           </Typography>
-          <IconButton onClick={refetch} disabled={isLoading}>
-            <Refresh />
-          </IconButton>
+          <Alert severity="info" sx={{ mt: 2 }}>
+            <Typography variant="body2">
+              💡 LINEで「@メモ」または「メモして」と送信すると、AIが自動的にメモを作成します
+            </Typography>
+          </Alert>
         </Box>
 
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
