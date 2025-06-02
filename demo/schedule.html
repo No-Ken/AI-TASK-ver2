@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日程調整 - AI秘書TASK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* ヘッダー */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        
+        .icon-button:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        /* カレンダー表示切り替え */
+        .view-toggle {
+            display: flex;
+            background-color: white;
+            border-radius: 20px;
+            padding: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .view-option {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .view-option.active {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        /* カレンダー */
+        .calendar {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-month {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            padding: 8px 0;
+            font-weight: 500;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .calendar-day.other-month {
+            color: #ccc;
+        }
+        
+        .calendar-day.today {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            font-weight: 500;
+        }
+        
+        .calendar-day.selected {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: #ff9800;
+        }
+        
+        .calendar-day.selected.has-event::after {
+            background-color: white;
+        }
+        
+        /* イベントリスト */
+        .event-list {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .event-list-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .event-list-title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .event-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .event-item:last-child {
+            border-bottom: none;
+        }
+        
+        .event-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+        
+        .event-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .event-time {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .event-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+        }
+        
+        .event-status.confirmed {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .event-status.pending {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .event-participants {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .avatar-group {
+            display: flex;
+        }
+        
+        .avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 500;
+            margin-left: -6px;
+            border: 2px solid white;
+        }
+        
+        .avatar:first-child {
+            margin-left: 0;
+        }
+        
+        .participant-count {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 日程調整詳細 */
+        .schedule-detail {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        
+        .detail-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .detail-info .material-icons {
+            color: #999;
+        }
+        
+        /* 候補日時 */
+        .candidate-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        
+        .candidate-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .candidate-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .candidate-item:hover {
+            border-color: #1976d2;
+            background-color: #f5f5f5;
+        }
+        
+        .candidate-item.selected {
+            border-color: #1976d2;
+            background-color: #e3f2fd;
+        }
+        
+        .candidate-date {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .candidate-votes {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .vote-bar {
+            flex: 1;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-right: 12px;
+        }
+        
+        .vote-fill {
+            height: 100%;
+            background-color: #4caf50;
+        }
+        
+        .vote-count {
+            font-size: 14px;
+            color: #666;
+            min-width: 60px;
+            text-align: right;
+        }
+        
+        .voter-avatars {
+            display: flex;
+            margin-top: 8px;
+        }
+        
+        .voter-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: 500;
+            margin-left: -4px;
+            border: 1px solid white;
+        }
+        
+        .voter-avatar:first-child {
+            margin-left: 0;
+        }
+        
+        /* 回答状況 */
+        .response-list {
+            list-style: none;
+        }
+        
+        .response-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .response-item:last-child {
+            border-bottom: none;
+        }
+        
+        .response-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .response-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+        
+        .response-name {
+            font-weight: 500;
+        }
+        
+        .response-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+        }
+        
+        .response-status.responded {
+            color: #4caf50;
+        }
+        
+        .response-status.pending {
+            color: #ff9800;
+        }
+        
+        /* 新規作成フォーム */
+        .create-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        
+        .date-picker {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .date-slot {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .date-slot:hover {
+            border-color: #1976d2;
+            background-color: #f5f5f5;
+        }
+        
+        .date-slot.selected {
+            border-color: #1976d2;
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .date-slot .date {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .date-slot .time {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* アクションボタン */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .button.primary {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .button.primary:hover {
+            background-color: #f57c00;
+        }
+        
+        .button.outlined {
+            background-color: transparent;
+            border: 1px solid #ff9800;
+            color: #ff9800;
+        }
+        
+        .button.outlined:hover {
+            background-color: rgba(255,152,0,0.1);
+        }
+        
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #ff9800;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: #1976d2;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-button .material-icons {
+            margin-right: 5px;
+        }
+        
+        .helper-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            <span class="material-icons">arrow_back</span>
+            デモ一覧に戻る
+        </a>
+        
+        <!-- ヘッダー -->
+        <div class="header">
+            <div class="header-left">
+                <button class="icon-button">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <h1>日程調整</h1>
+            </div>
+            <button class="icon-button">
+                <span class="material-icons">more_vert</span>
+            </button>
+        </div>
+        
+        <!-- 表示切り替え -->
+        <div class="view-toggle">
+            <button class="view-option active">カレンダー</button>
+            <button class="view-option">リスト</button>
+            <button class="view-option">調整中</button>
+        </div>
+        
+        <!-- カレンダー -->
+        <div class="calendar">
+            <div class="calendar-header">
+                <div class="calendar-month">2024年12月</div>
+                <div class="calendar-nav">
+                    <button class="icon-button">
+                        <span class="material-icons">chevron_left</span>
+                    </button>
+                    <button class="icon-button">
+                        <span class="material-icons">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+            <div class="calendar-grid">
+                <div class="calendar-day-header">日</div>
+                <div class="calendar-day-header">月</div>
+                <div class="calendar-day-header">火</div>
+                <div class="calendar-day-header">水</div>
+                <div class="calendar-day-header">木</div>
+                <div class="calendar-day-header">金</div>
+                <div class="calendar-day-header">土</div>
+                
+                <div class="calendar-day other-month">26</div>
+                <div class="calendar-day other-month">27</div>
+                <div class="calendar-day other-month">28</div>
+                <div class="calendar-day other-month">29</div>
+                <div class="calendar-day other-month">30</div>
+                <div class="calendar-day today has-event">1</div>
+                <div class="calendar-day">2</div>
+                <div class="calendar-day">3</div>
+                <div class="calendar-day">4</div>
+                <div class="calendar-day">5</div>
+                <div class="calendar-day">6</div>
+                <div class="calendar-day">7</div>
+                <div class="calendar-day">8</div>
+                <div class="calendar-day">9</div>
+                <div class="calendar-day">10</div>
+                <div class="calendar-day">11</div>
+                <div class="calendar-day">12</div>
+                <div class="calendar-day">13</div>
+                <div class="calendar-day">14</div>
+                <div class="calendar-day has-event">15</div>
+                <div class="calendar-day">16</div>
+                <div class="calendar-day">17</div>
+                <div class="calendar-day">18</div>
+                <div class="calendar-day">19</div>
+                <div class="calendar-day has-event">20</div>
+                <div class="calendar-day">21</div>
+                <div class="calendar-day">22</div>
+                <div class="calendar-day">23</div>
+                <div class="calendar-day">24</div>
+                <div class="calendar-day">25</div>
+                <div class="calendar-day">26</div>
+                <div class="calendar-day">27</div>
+                <div class="calendar-day">28</div>
+                <div class="calendar-day">29</div>
+                <div class="calendar-day">30</div>
+                <div class="calendar-day">31</div>
+                <div class="calendar-day other-month">1</div>
+                <div class="calendar-day other-month">2</div>
+                <div class="calendar-day other-month">3</div>
+                <div class="calendar-day other-month">4</div>
+                <div class="calendar-day other-month">5</div>
+                <div class="calendar-day other-month">6</div>
+            </div>
+        </div>
+        
+        <!-- イベントリスト -->
+        <div class="event-list">
+            <div class="event-list-header">
+                <div class="event-list-title">今日の予定</div>
+            </div>
+            <div class="event-item">
+                <div class="event-header">
+                    <div>
+                        <div class="event-title">定例会議</div>
+                        <div class="event-time">10:00 - 11:30</div>
+                    </div>
+                    <div class="event-status confirmed">
+                        <span class="material-icons" style="font-size: 14px;">check_circle</span>
+                        確定
+                    </div>
+                </div>
+                <div class="event-participants">
+                    <div class="avatar-group">
+                        <div class="avatar" style="background-color: #1976d2; color: white;">山</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                        <div class="avatar" style="background-color: #ff9800; color: white;">佐</div>
+                    </div>
+                    <span class="participant-count">3人参加</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 調整中の予定 -->
+        <div class="event-list">
+            <div class="event-list-header">
+                <div class="event-list-title">調整中の予定</div>
+            </div>
+            <div class="event-item">
+                <div class="event-header">
+                    <div>
+                        <div class="event-title">新年会</div>
+                        <div class="event-time">候補日: 1/10-1/20</div>
+                    </div>
+                    <div class="event-status pending">
+                        <span class="material-icons" style="font-size: 14px;">schedule</span>
+                        調整中
+                    </div>
+                </div>
+                <div class="event-participants">
+                    <div class="avatar-group">
+                        <div class="avatar" style="background-color: #1976d2; color: white;">山</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                        <div class="avatar" style="background-color: #ff9800; color: white;">佐</div>
+                        <div class="avatar">+2</div>
+                    </div>
+                    <span class="participant-count">3/5人回答</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 日程調整詳細の例 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">日程調整詳細の表示例：</h3>
+            
+            <div class="schedule-detail">
+                <h2 class="detail-title">新年会の日程調整</h2>
+                
+                <div class="detail-info">
+                    <span class="material-icons">event</span>
+                    候補期間: 2025/1/10 〜 1/20
+                </div>
+                <div class="detail-info">
+                    <span class="material-icons">location_on</span>
+                    場所: 未定（オンライン可）
+                </div>
+                <div class="detail-info">
+                    <span class="material-icons">people</span>
+                    参加者: 5人（3人回答済み）
+                </div>
+                
+                <div class="candidate-section">
+                    <h3 class="section-title">候補日時</h3>
+                    <div class="candidate-list">
+                        <div class="candidate-item selected">
+                            <div class="candidate-date">1月12日（金）19:00〜</div>
+                            <div class="candidate-votes">
+                                <div class="vote-bar">
+                                    <div class="vote-fill" style="width: 80%;"></div>
+                                </div>
+                                <div class="vote-count">4/5人 ◯</div>
+                            </div>
+                            <div class="voter-avatars">
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">山</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">田</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">佐</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">鈴</div>
+                            </div>
+                        </div>
+                        
+                        <div class="candidate-item">
+                            <div class="candidate-date">1月15日（月）19:00〜</div>
+                            <div class="candidate-votes">
+                                <div class="vote-bar">
+                                    <div class="vote-fill" style="width: 60%;"></div>
+                                </div>
+                                <div class="vote-count">3/5人 ◯</div>
+                            </div>
+                            <div class="voter-avatars">
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">山</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">田</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">佐</div>
+                            </div>
+                        </div>
+                        
+                        <div class="candidate-item">
+                            <div class="candidate-date">1月19日（金）19:00〜</div>
+                            <div class="candidate-votes">
+                                <div class="vote-bar">
+                                    <div class="vote-fill" style="width: 40%;"></div>
+                                </div>
+                                <div class="vote-count">2/5人 ◯</div>
+                            </div>
+                            <div class="voter-avatars">
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">山</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">鈴</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="candidate-section">
+                    <h3 class="section-title">回答状況</h3>
+                    <ul class="response-list">
+                        <li class="response-item">
+                            <div class="response-user">
+                                <div class="response-avatar" style="background-color: #1976d2; color: white;">山</div>
+                                <div class="response-name">山田太郎（主催）</div>
+                            </div>
+                            <div class="response-status responded">
+                                <span class="material-icons">check_circle</span>
+                                回答済み
+                            </div>
+                        </li>
+                        <li class="response-item">
+                            <div class="response-user">
+                                <div class="response-avatar" style="background-color: #4caf50; color: white;">田</div>
+                                <div class="response-name">田中太郎</div>
+                            </div>
+                            <div class="response-status responded">
+                                <span class="material-icons">check_circle</span>
+                                回答済み
+                            </div>
+                        </li>
+                        <li class="response-item">
+                            <div class="response-user">
+                                <div class="response-avatar" style="background-color: #ff9800; color: white;">佐</div>
+                                <div class="response-name">佐藤花子</div>
+                            </div>
+                            <div class="response-status responded">
+                                <span class="material-icons">check_circle</span>
+                                回答済み
+                            </div>
+                        </li>
+                        <li class="response-item">
+                            <div class="response-user">
+                                <div class="response-avatar" style="background-color: #9c27b0; color: white;">鈴</div>
+                                <div class="response-name">鈴木一郎</div>
+                            </div>
+                            <div class="response-status pending">
+                                <span class="material-icons">schedule</span>
+                                未回答
+                            </div>
+                        </li>
+                        <li class="response-item">
+                            <div class="response-user">
+                                <div class="response-avatar">高</div>
+                                <div class="response-name">高橋二郎</div>
+                            </div>
+                            <div class="response-status pending">
+                                <span class="material-icons">schedule</span>
+                                未回答
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="button outlined">
+                        <span class="material-icons">notifications</span>
+                        リマインダー送信
+                    </button>
+                    <button class="button primary">
+                        <span class="material-icons">check</span>
+                        日程を確定
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 新規作成フォームの例 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">新規作成フォームの例：</h3>
+            
+            <div class="create-form">
+                <div class="form-group">
+                    <label>イベント名</label>
+                    <input type="text" placeholder="例：会議、飲み会、勉強会">
+                    <div class="helper-text">参加者にわかりやすい名前を付けてください</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>説明（任意）</label>
+                    <textarea placeholder="イベントの詳細や議題など"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>候補日時</label>
+                    <div class="date-picker">
+                        <div class="date-slot selected">
+                            <div class="date">12月15日（金）</div>
+                            <div class="time">19:00-21:00</div>
+                        </div>
+                        <div class="date-slot">
+                            <div class="date">12月18日（月）</div>
+                            <div class="time">19:00-21:00</div>
+                        </div>
+                        <div class="date-slot selected">
+                            <div class="date">12月20日（水）</div>
+                            <div class="time">19:00-21:00</div>
+                        </div>
+                        <div class="date-slot">
+                            <div class="date">12月22日（金）</div>
+                            <div class="time">19:00-21:00</div>
+                        </div>
+                    </div>
+                    <button class="button outlined" style="margin-top: 12px;">
+                        <span class="material-icons">add</span>
+                        候補日時を追加
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label>場所（任意）</label>
+                    <input type="text" placeholder="例：第1会議室、オンライン">
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="button outlined">キャンセル</button>
+                    <button class="button primary">
+                        <span class="material-icons">send</span>
+                        作成して参加者に送信
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAB -->
+    <div class="fab">
+        <span class="material-icons">add</span>
+    </div>
+</body>
+</html>

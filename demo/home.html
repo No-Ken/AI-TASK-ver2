@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ホームページ - AI秘書TASK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* ヘッダー */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .avatar-badge {
+            position: relative;
+        }
+        
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #1976d2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #f44336;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* アラート */
+        .alert {
+            background-color: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .alert strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        /* 統計カード */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stat-card .content {
+            flex-grow: 1;
+        }
+        
+        .stat-card .label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .stat-card .trend {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+        
+        .stat-card .trend.positive {
+            color: #4caf50;
+        }
+        
+        .stat-card .icon {
+            color: #1976d2;
+            font-size: 40px;
+        }
+        
+        /* クイックアクション */
+        .section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .action-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .action-card .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-card .icon {
+            font-size: 24px;
+        }
+        
+        .action-card .title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .action-card .description {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* アクティビティ */
+        .activity-list {
+            list-style: none;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-item .icon {
+            margin-right: 15px;
+            color: #666;
+        }
+        
+        .activity-item .content {
+            flex-grow: 1;
+        }
+        
+        .activity-item .title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .activity-item .details {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* 通知 */
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .notification-item.unread {
+            background-color: #e3f2fd;
+        }
+        
+        .notification-item .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #1976d2;
+            margin-right: 10px;
+            margin-top: 6px;
+        }
+        
+        .notification-item.read .dot {
+            background-color: transparent;
+        }
+        
+        .notification-item .icon {
+            margin-right: 15px;
+            color: #666;
+        }
+        
+        .notification-item.unread .icon {
+            color: #1976d2;
+        }
+        
+        /* ヒント */
+        .hint {
+            background-color: #f3e5f5;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .hint .title {
+            color: #7b1fa2;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .hint .content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* フローティングアクションボタン */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #1976d2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+        
+        /* 戻るボタン */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: #1976d2;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-button .material-icons {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            <span class="material-icons">arrow_back</span>
+            デモ一覧に戻る
+        </a>
+        
+        <!-- ヘッダー -->
+        <div class="header">
+            <div>
+                <h1>おかえりなさい</h1>
+                <p class="subtitle">山田太郎さん</p>
+            </div>
+            <div class="avatar-badge">
+                <div class="avatar">山</div>
+                <span class="badge">2</span>
+            </div>
+        </div>
+        
+        <!-- ウェルカムアラート -->
+        <div class="alert">
+            <strong>LINE秘書 TASKへようこそ！</strong>
+            割り勘、スケジュール、メモ機能で日常をサポートします。
+        </div>
+        
+        <!-- 統計情報 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="content">
+                    <div class="label">個人メモ</div>
+                    <div class="value">23</div>
+                    <div class="trend positive">
+                        <span class="material-icons" style="font-size: 16px;">trending_up</span>
+                        +12%
+                    </div>
+                </div>
+                <span class="material-icons icon">description</span>
+            </div>
+            
+            <div class="stat-card">
+                <div class="content">
+                    <div class="label">割り勘</div>
+                    <div class="value">2</div>
+                </div>
+                <span class="material-icons icon">account_balance_wallet</span>
+            </div>
+            
+            <div class="stat-card">
+                <div class="content">
+                    <div class="label">予定</div>
+                    <div class="value">5</div>
+                </div>
+                <span class="material-icons icon">event</span>
+            </div>
+            
+            <div class="stat-card">
+                <div class="content">
+                    <div class="label">共有メモ</div>
+                    <div class="value">8</div>
+                    <div class="trend positive">
+                        <span class="material-icons" style="font-size: 16px;">trending_up</span>
+                        +25%
+                    </div>
+                </div>
+                <span class="material-icons icon">people</span>
+            </div>
+        </div>
+        
+        <!-- クイックアクション -->
+        <div class="section">
+            <h2>クイックアクション</h2>
+            <div class="quick-actions">
+                <div class="action-card">
+                    <div class="icon-wrapper" style="background-color: #e3f2fd;">
+                        <span class="material-icons icon" style="color: #2196f3;">description</span>
+                    </div>
+                    <div class="title">メモ作成</div>
+                    <div class="description">新しいメモを作成</div>
+                </div>
+                
+                <div class="action-card">
+                    <div class="icon-wrapper" style="background-color: #e8f5e9;">
+                        <span class="material-icons icon" style="color: #4caf50;">account_balance_wallet</span>
+                    </div>
+                    <div class="title">割り勘</div>
+                    <div class="description">割り勘を作成・管理</div>
+                </div>
+                
+                <div class="action-card">
+                    <div class="icon-wrapper" style="background-color: #fff3e0;">
+                        <span class="material-icons icon" style="color: #ff9800;">event</span>
+                    </div>
+                    <div class="title">日程調整</div>
+                    <div class="description">予定の確認・追加</div>
+                </div>
+                
+                <div class="action-card">
+                    <div class="icon-wrapper" style="background-color: #f3e5f5;">
+                        <span class="material-icons icon" style="color: #9c27b0;">people</span>
+                    </div>
+                    <div class="title">共有メモ</div>
+                    <div class="description">グループでメモ共有</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 最近のアクティビティ -->
+        <div class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2>最近のアクティビティ</h2>
+                <a href="#" style="color: #1976d2; text-decoration: none; font-size: 14px;">
+                    すべて見る →
+                </a>
+            </div>
+            <ul class="activity-list">
+                <li class="activity-item">
+                    <span class="material-icons icon" style="color: #2196f3;">description</span>
+                    <div class="content">
+                        <div class="title">会議メモを作成</div>
+                        <div class="details">12月定例会議のメモを作成しました • 30分前</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <span class="material-icons icon" style="color: #4caf50;">account_balance_wallet</span>
+                    <div class="content">
+                        <div class="title">忘年会の割り勘を更新</div>
+                        <div class="details">参加者を追加しました • 2時間前</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <span class="material-icons icon" style="color: #ff9800;">event</span>
+                    <div class="content">
+                        <div class="title">来週の会議予定</div>
+                        <div class="details">候補日を3つ追加しました • 1日前</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 通知 -->
+        <div class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2>通知</h2>
+                <div style="display: flex; align-items: center;">
+                    <span class="badge">2</span>
+                    <span class="material-icons" style="margin-left: 10px;">notifications</span>
+                </div>
+            </div>
+            <div class="notification-item unread">
+                <div class="dot"></div>
+                <span class="material-icons icon">alarm</span>
+                <div class="content">
+                    <div class="title">会議のリマインダー</div>
+                    <div class="details">明日の10:00から定例会議があります</div>
+                </div>
+            </div>
+            <div class="notification-item unread">
+                <div class="dot"></div>
+                <span class="material-icons icon">person_add</span>
+                <div class="content">
+                    <div class="title">共有メモに招待されました</div>
+                    <div class="details">田中さんがあなたを編集メンバーに追加しました</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 使い方のヒント -->
+        <div class="hint">
+            <div class="title">💡 使い方のヒント</div>
+            <div class="content">
+                LINEでメッセージを送ると、AIが自動的にメモや割り勘、予定を作成できます。<br>
+                例: 「@メモ 明日の会議の準備をする」
+            </div>
+        </div>
+    </div>
+    
+    <!-- フローティングアクションボタン -->
+    <div class="fab">
+        <span class="material-icons">add</span>
+    </div>
+</body>
+</html>

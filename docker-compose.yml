@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: ./infrastructure/docker/bot.Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=development
+      - PORT=8080
+      - LINE_CHANNEL_ACCESS_TOKEN=DUMMY_CHANNEL_ACCESS_TOKEN
+      - LINE_CHANNEL_SECRET=DUMMY_CHANNEL_SECRET
+      - LIFF_ID=DUMMY_LIFF_ID
+      - FIREBASE_PROJECT_ID=line-secretary-task
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/serviceaccount.json
+      - GEMINI_API_KEY=DUMMY_GEMINI_API_KEY
+      - BOT_WEBHOOK_URL=http://localhost:8080/webhook
+      - LIFF_APP_URL=http://localhost:3000
+    volumes:
+      - ./apps/bot:/app/apps/bot
+      - ./packages:/app/packages
+      - ./serviceaccount.json:/app/serviceaccount.json
+    depends_on:
+      - firestore-emulator
+
+  liff:
+    build:
+      context: .
+      dockerfile: ./infrastructure/docker/liff.Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_LIFF_ID=DUMMY_LIFF_ID
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+    volumes:
+      - ./apps/liff:/app/apps/liff
+      - ./packages:/app/packages
+
+  liff-api:
+    build:
+      context: .
+      dockerfile: ./infrastructure/docker/liff-api.Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - FIREBASE_PROJECT_ID=line-secretary-task
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/serviceaccount.json
+    volumes:
+      - ./apps/liff-api:/app/apps/liff-api
+      - ./packages:/app/packages
+      - ./serviceaccount.json:/app/serviceaccount.json
+    depends_on:
+      - firestore-emulator
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./infrastructure/docker/worker.Dockerfile
+    environment:
+      - NODE_ENV=development
+      - FIREBASE_PROJECT_ID=line-secretary-task
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/serviceaccount.json
+      - LINE_CHANNEL_ACCESS_TOKEN=DUMMY_CHANNEL_ACCESS_TOKEN
+    volumes:
+      - ./apps/worker:/app/apps/worker
+      - ./packages:/app/packages
+      - ./serviceaccount.json:/app/serviceaccount.json
+    depends_on:
+      - firestore-emulator
+
+  firestore-emulator:
+    image: google/cloud-sdk:alpine
+    command: >
+      sh -c "
+        gcloud components install cloud-firestore-emulator beta &&
+        gcloud beta emulators firestore start --host-port=0.0.0.0:8090
+      "
+    ports:
+      - "8090:8090"
+      - "8091:8091"
+    environment:
+      - FIRESTORE_PROJECT_ID=line-secretary-task
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - bot
+      - liff
+      - liff-api

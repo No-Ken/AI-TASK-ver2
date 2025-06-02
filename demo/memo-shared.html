@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>共有メモ詳細 - AI秘書TASK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* ヘッダー */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        
+        .icon-button:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        /* リアルタイム編集インジケーター */
+        .realtime-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 10px;
+        }
+        
+        .edit-badge {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background-color: #e8f5e9;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #2e7d32;
+        }
+        
+        .edit-badge .count {
+            background-color: #4caf50;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #f44336;
+        }
+        
+        .sync-status.connected {
+            color: #4caf50;
+        }
+        
+        /* アラート */
+        .alert {
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .alert.info {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .alert.warning {
+            background-color: #fff8e1;
+            color: #f57f17;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .alert-close {
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.7;
+        }
+        
+        .alert-close:hover {
+            opacity: 1;
+        }
+        
+        /* メインカード */
+        .main-card {
+            background-color: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .memo-title {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        
+        .memo-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+        
+        .chip.primary {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .chip.outlined {
+            border: 1px solid #e0e0e0;
+            color: #666;
+        }
+        
+        .chip.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .chip.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .chip .material-icons {
+            font-size: 16px;
+        }
+        
+        .memo-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 20px 0;
+        }
+        
+        /* テンプレートコンテンツ */
+        .template-section {
+            margin-bottom: 24px;
+        }
+        
+        .template-section h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        .template-list {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .template-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+        
+        .template-list .material-icons {
+            font-size: 18px;
+            color: #4caf50;
+            margin-top: 2px;
+        }
+        
+        .template-text {
+            background-color: #f5f5f5;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* メンバー管理 */
+        .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .member-header h2 {
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .avatar-group {
+            display: flex;
+            margin-right: 10px;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #1976d2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: -8px;
+            border: 2px solid white;
+            position: relative;
+        }
+        
+        .avatar:first-child {
+            margin-left: 0;
+        }
+        
+        .avatar.active {
+            border-color: #4caf50;
+        }
+        
+        .member-list {
+            list-style: none;
+        }
+        
+        .member-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .member-item:last-child {
+            border-bottom: none;
+        }
+        
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            position: relative;
+        }
+        
+        .member-avatar.has-badge::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            background-color: #4caf50;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .member-info {
+            flex: 1;
+        }
+        
+        .member-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .member-status {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .member-badge {
+            background-color: #e0e0e0;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        
+        /* アクションボタン */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #1976d2;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: transparent;
+            color: #1976d2;
+        }
+        
+        .button:hover {
+            background-color: rgba(25,118,210,0.1);
+        }
+        
+        .button.primary {
+            background-color: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+        
+        .button.primary:hover {
+            background-color: #1565c0;
+        }
+        
+        /* メニュー（デモ用表示） */
+        .menu-demo {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 8px 0;
+            margin-top: 20px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .menu-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .menu-item .material-icons {
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .menu-divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 8px 0;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: #1976d2;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-button .material-icons {
+            margin-right: 5px;
+        }
+        
+        /* ダイアログ（デモ用表示） */
+        .dialog-demo {
+            background-color: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+        
+        .dialog-title {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .dialog-content {
+            margin-bottom: 24px;
+            color: #666;
+        }
+        
+        .member-select-list {
+            list-style: none;
+            margin-top: 16px;
+        }
+        
+        .member-select-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+        
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+        }
+        
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            <span class="material-icons">arrow_back</span>
+            デモ一覧に戻る
+        </a>
+        
+        <!-- ヘッダー -->
+        <div class="header">
+            <div class="header-left">
+                <button class="icon-button">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <h1>共有メモ</h1>
+            </div>
+            <div class="realtime-indicator">
+                <div class="edit-badge">
+                    <span class="material-icons">edit_note</span>
+                    <span class="count">2</span>
+                </div>
+                <div class="sync-status connected">
+                    <span class="material-icons">sync</span>
+                    同期済み
+                </div>
+            </div>
+            <button class="icon-button">
+                <span class="material-icons">edit</span>
+            </button>
+            <button class="icon-button">
+                <span class="material-icons">more_vert</span>
+            </button>
+        </div>
+        
+        <!-- コラボレーションアラート -->
+        <div class="alert info">
+            <span class="material-icons">info</span>
+            <div class="alert-content">
+                <div class="alert-title">リアルタイム編集中</div>
+                <div>田中太郎、佐藤花子が同時に編集しています。</div>
+            </div>
+            <span class="material-icons alert-close">close</span>
+        </div>
+        
+        <!-- メインコンテンツ -->
+        <div class="main-card">
+            <h2 class="memo-title">12月定例会議</h2>
+            
+            <div class="memo-chips">
+                <div class="chip primary">
+                    <span class="material-icons">people</span>
+                    開発チーム
+                </div>
+                <div class="chip outlined">
+                    <span class="material-icons">description</span>
+                    会議
+                </div>
+                <div class="chip success">
+                    <span class="material-icons">lock_open</span>
+                    編集可能
+                </div>
+                <div class="chip success outlined">
+                    <span class="material-icons">sync</span>
+                    同期済み
+                </div>
+            </div>
+            
+            <div class="memo-meta">
+                作成者: 山田太郎 • 2024/12/1 10:00<br>
+                最終更新: 田中太郎 • 2024/12/1 11:30
+            </div>
+            
+            <div class="divider"></div>
+            
+            <!-- テンプレート形式のコンテンツ -->
+            <div class="template-section">
+                <h3>日時</h3>
+                <div class="template-text">2024年12月1日（金）10:00〜11:30</div>
+            </div>
+            
+            <div class="template-section">
+                <h3>参加者</h3>
+                <ul class="template-list">
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>山田太郎（司会）</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>田中太郎</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>佐藤花子</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>鈴木一郎</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="template-section">
+                <h3>アジェンダ</h3>
+                <ul class="template-list">
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>前月の進捗確認</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>新機能の仕様検討</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>リリーススケジュールの調整</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>課題と対策の共有</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="template-section">
+                <h3>決定事項</h3>
+                <ul class="template-list">
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>新機能のリリースを12月20日に設定</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>テスト期間を1週間確保</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>ドキュメント作成担当を田中さんに決定</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="template-section">
+                <h3>TODO</h3>
+                <ul class="template-list">
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>【山田】仕様書の最終確認（〜12/5）</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>【田中】ドキュメント作成（〜12/10）</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>【佐藤】テスト環境の準備（〜12/8）</span>
+                    </li>
+                    <li>
+                        <span class="material-icons">check_circle</span>
+                        <span>【鈴木】ステークホルダーへの連絡（〜12/3）</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="template-section">
+                <h3>次回会議</h3>
+                <div class="template-text">2024年12月15日（金）10:00〜 ＠第1会議室</div>
+            </div>
+        </div>
+        
+        <!-- メンバー管理 -->
+        <div class="main-card">
+            <div class="member-header">
+                <h2>編集メンバー</h2>
+                <div style="display: flex; align-items: center;">
+                    <div class="avatar-group">
+                        <div class="avatar active">田</div>
+                        <div class="avatar active">佐</div>
+                        <div class="avatar">鈴</div>
+                    </div>
+                    <button class="button" style="width: auto; padding: 6px 12px;">
+                        <span class="material-icons">person_add</span>
+                        追加
+                    </button>
+                </div>
+            </div>
+            
+            <ul class="member-list">
+                <li class="member-item">
+                    <div class="member-avatar has-badge">山</div>
+                    <div class="member-info">
+                        <div class="member-name">
+                            山田太郎
+                            <span class="member-badge">作成者</span>
+                        </div>
+                        <div class="member-status">最終編集: 2024/12/1 10:00</div>
+                    </div>
+                </li>
+                <li class="member-item">
+                    <div class="member-avatar has-badge">田</div>
+                    <div class="member-info">
+                        <div class="member-name">
+                            田中太郎
+                            <div class="chip success" style="font-size: 11px; padding: 2px 8px;">編集中</div>
+                        </div>
+                        <div class="member-status" style="color: #4caf50;">現在編集中</div>
+                    </div>
+                </li>
+                <li class="member-item">
+                    <div class="member-avatar has-badge">佐</div>
+                    <div class="member-info">
+                        <div class="member-name">
+                            佐藤花子
+                            <div class="chip success" style="font-size: 11px; padding: 2px 8px;">編集中</div>
+                        </div>
+                        <div class="member-status" style="color: #4caf50;">現在編集中</div>
+                    </div>
+                </li>
+                <li class="member-item">
+                    <div class="member-avatar">鈴</div>
+                    <div class="member-info">
+                        <div class="member-name">
+                            鈴木一郎
+                        </div>
+                        <div class="member-status">最終編集: 2024/11/30 16:45</div>
+                    </div>
+                </li>
+            </ul>
+            
+            <div style="margin-top: 12px; font-size: 12px; color: #666;">
+                4人が閲覧可能 • 2人が編集中
+            </div>
+        </div>
+        
+        <!-- アクションボタン -->
+        <div class="action-buttons">
+            <button class="button">
+                <span class="material-icons">share</span>
+                LINEで共有
+            </button>
+            <button class="button">
+                <span class="material-icons">content_copy</span>
+                リンクコピー
+            </button>
+        </div>
+        
+        <!-- メニュー表示例 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">メニューの表示例：</h3>
+            <div class="menu-demo">
+                <div class="menu-item">
+                    <span class="material-icons">edit</span>
+                    編集
+                </div>
+                <div class="menu-item">
+                    <span class="material-icons">content_copy</span>
+                    リンクをコピー
+                </div>
+                <div class="menu-item">
+                    <span class="material-icons">download</span>
+                    エクスポート
+                </div>
+                <div class="menu-item">
+                    <span class="material-icons">history</span>
+                    履歴
+                </div>
+                <div class="menu-divider"></div>
+                <div class="menu-item">
+                    <span class="material-icons">archive</span>
+                    アーカイブ
+                </div>
+                <div class="menu-item">
+                    <span class="material-icons">people</span>
+                    メンバー管理
+                </div>
+            </div>
+        </div>
+        
+        <!-- メンバー追加ダイアログの例 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">メンバー追加ダイアログの表示例：</h3>
+            <div class="dialog-demo">
+                <h3 class="dialog-title">編集メンバーを追加</h3>
+                <div class="dialog-content">
+                    <p>グループメンバーから編集権限を付与する人を選択してください。</p>
+                    <ul class="member-select-list">
+                        <li class="member-select-item">
+                            <input type="checkbox" class="checkbox">
+                            <div class="member-avatar">佐</div>
+                            <div class="member-info">
+                                <div class="member-name">佐々木一郎</div>
+                                <div class="member-status" style="color: #4caf50;">オンライン</div>
+                            </div>
+                        </li>
+                        <li class="member-select-item">
+                            <input type="checkbox" class="checkbox">
+                            <div class="member-avatar">渡</div>
+                            <div class="member-info">
+                                <div class="member-name">渡辺美咲</div>
+                                <div class="member-status">オフライン</div>
+                            </div>
+                        </li>
+                        <li class="member-select-item">
+                            <input type="checkbox" class="checkbox" checked>
+                            <div class="member-avatar">高</div>
+                            <div class="member-info">
+                                <div class="member-name">高橋慎太郎</div>
+                                <div class="member-status" style="color: #4caf50;">オンライン</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dialog-actions">
+                    <button class="button">キャンセル</button>
+                    <button class="button primary">1人を追加</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- その他の状態表示例 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">その他の状態表示例：</h3>
+            
+            <!-- 未同期警告 -->
+            <div class="alert warning">
+                <span class="material-icons">warning</span>
+                <div class="alert-content">
+                    <div class="alert-title">未同期の変更があります</div>
+                    <div>他のユーザーが編集した内容があります。同期ボタンで最新の状態を取得してください。</div>
+                </div>
+                <button class="button" style="width: auto; padding: 6px 12px; margin-left: 12px;">同期</button>
+            </div>
+            
+            <!-- オフライン表示 -->
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <div class="sync-status">
+                    <span class="material-icons">sync_disabled</span>
+                    オフライン
+                </div>
+                <div class="chip error outlined">
+                    <span class="material-icons">sync_disabled</span>
+                    オフライン
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

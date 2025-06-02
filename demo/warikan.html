@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>割り勘 - AI秘書TASK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* ヘッダー */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        
+        .icon-button:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        /* 統計カード */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .stat-card.primary .value {
+            color: #1976d2;
+        }
+        
+        .stat-card.success .value {
+            color: #4caf50;
+        }
+        
+        .stat-card.warning .value {
+            color: #ff9800;
+        }
+        
+        /* タブ */
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            font-weight: 500;
+        }
+        
+        /* 割り勘リスト */
+        .warikan-list {
+            background-color: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .warikan-item {
+            padding: 20px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .warikan-item:last-child {
+            border-bottom: none;
+        }
+        
+        .warikan-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .warikan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+        
+        .warikan-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .warikan-date {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .warikan-amount {
+            text-align: right;
+        }
+        
+        .warikan-total {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .warikan-per-person {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .warikan-participants {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .avatar-group {
+            display: flex;
+        }
+        
+        .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: -8px;
+            border: 2px solid white;
+        }
+        
+        .avatar:first-child {
+            margin-left: 0;
+        }
+        
+        .participant-count {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .warikan-status {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+        }
+        
+        .status-chip.active {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-chip.completed {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-chip.pending {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .status-chip .material-icons {
+            font-size: 14px;
+        }
+        
+        /* 割り勘詳細 */
+        .warikan-detail {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .detail-title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .detail-total {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 4px;
+        }
+        
+        .detail-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* 支払い状況 */
+        .payment-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .payment-progress {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #4caf50;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            font-weight: 500;
+            min-width: 40px;
+        }
+        
+        .participant-list {
+            list-style: none;
+        }
+        
+        .participant-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .participant-item:last-child {
+            border-bottom: none;
+        }
+        
+        .participant-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .participant-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+        
+        .participant-name {
+            font-weight: 500;
+        }
+        
+        .participant-amount {
+            text-align: right;
+        }
+        
+        .amount-value {
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .payment-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        .payment-status.paid {
+            color: #4caf50;
+        }
+        
+        .payment-status.pending {
+            color: #ff9800;
+        }
+        
+        /* アクションボタン */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .button.primary {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .button.primary:hover {
+            background-color: #1565c0;
+        }
+        
+        .button.outlined {
+            background-color: transparent;
+            border: 1px solid #1976d2;
+            color: #1976d2;
+        }
+        
+        .button.outlined:hover {
+            background-color: rgba(25,118,210,0.1);
+        }
+        
+        /* 新規作成フォーム */
+        .create-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        
+        .helper-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        /* 領収書アップロード */
+        .receipt-upload {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .receipt-upload:hover {
+            border-color: #1976d2;
+            background-color: #f5f5f5;
+        }
+        
+        .receipt-upload .material-icons {
+            font-size: 48px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        
+        .receipt-upload p {
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .receipt-upload .button {
+            width: auto;
+            padding: 8px 16px;
+        }
+        
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #4caf50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: #1976d2;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-button .material-icons {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            <span class="material-icons">arrow_back</span>
+            デモ一覧に戻る
+        </a>
+        
+        <!-- ヘッダー -->
+        <div class="header">
+            <div class="header-left">
+                <button class="icon-button">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <h1>割り勘</h1>
+            </div>
+            <button class="icon-button">
+                <span class="material-icons">more_vert</span>
+            </button>
+        </div>
+        
+        <!-- 統計情報 -->
+        <div class="stats-row">
+            <div class="stat-card primary">
+                <div class="value">2</div>
+                <div class="label">進行中</div>
+            </div>
+            <div class="stat-card success">
+                <div class="value">¥4,500</div>
+                <div class="label">未回収</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">15</div>
+                <div class="label">完了済み</div>
+            </div>
+        </div>
+        
+        <!-- タブ -->
+        <div class="tabs">
+            <button class="tab active">進行中</button>
+            <button class="tab">完了済み</button>
+            <button class="tab">すべて</button>
+        </div>
+        
+        <!-- 割り勘リスト -->
+        <div class="warikan-list">
+            <div class="warikan-item">
+                <div class="warikan-header">
+                    <div>
+                        <div class="warikan-title">忘年会</div>
+                        <div class="warikan-date">2024/12/20</div>
+                    </div>
+                    <div class="warikan-amount">
+                        <div class="warikan-total">¥15,000</div>
+                        <div class="warikan-per-person">¥3,000/人</div>
+                    </div>
+                </div>
+                <div class="warikan-participants">
+                    <div class="avatar-group">
+                        <div class="avatar" style="background-color: #1976d2; color: white;">山</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                        <div class="avatar" style="background-color: #ff9800; color: white;">佐</div>
+                        <div class="avatar" style="background-color: #9c27b0; color: white;">鈴</div>
+                        <div class="avatar">+1</div>
+                    </div>
+                    <span class="participant-count">5人参加</span>
+                </div>
+                <div class="warikan-status">
+                    <div class="status-chip active">
+                        <span class="material-icons">schedule</span>
+                        進行中
+                    </div>
+                    <div class="status-chip pending">
+                        <span class="material-icons">warning</span>
+                        3人未払い
+                    </div>
+                </div>
+            </div>
+            
+            <div class="warikan-item">
+                <div class="warikan-header">
+                    <div>
+                        <div class="warikan-title">ランチ会</div>
+                        <div class="warikan-date">2024/12/1</div>
+                    </div>
+                    <div class="warikan-amount">
+                        <div class="warikan-total">¥4,500</div>
+                        <div class="warikan-per-person">¥1,500/人</div>
+                    </div>
+                </div>
+                <div class="warikan-participants">
+                    <div class="avatar-group">
+                        <div class="avatar" style="background-color: #1976d2; color: white;">山</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                        <div class="avatar" style="background-color: #ff9800; color: white;">佐</div>
+                    </div>
+                    <span class="participant-count">3人参加</span>
+                </div>
+                <div class="warikan-status">
+                    <div class="status-chip active">
+                        <span class="material-icons">schedule</span>
+                        進行中
+                    </div>
+                    <div class="status-chip pending">
+                        <span class="material-icons">warning</span>
+                        1人未払い
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 割り勘詳細の例 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">割り勘詳細の表示例：</h3>
+            
+            <div class="warikan-detail">
+                <div class="detail-header">
+                    <div class="detail-title">忘年会</div>
+                    <div class="detail-total">¥15,000</div>
+                    <div class="detail-info">合計金額</div>
+                </div>
+                
+                <div class="payment-section">
+                    <h3 class="section-title">
+                        <span class="material-icons">payment</span>
+                        支払い状況
+                    </h3>
+                    <div class="payment-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%;"></div>
+                        </div>
+                        <span class="progress-text">40%</span>
+                    </div>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 16px;">
+                        5人中2人が支払い済み
+                    </p>
+                </div>
+                
+                <div class="payment-section">
+                    <h3 class="section-title">
+                        <span class="material-icons">people</span>
+                        参加者と支払い状況
+                    </h3>
+                    <ul class="participant-list">
+                        <li class="participant-item">
+                            <div class="participant-info">
+                                <div class="participant-avatar" style="background-color: #1976d2; color: white;">山</div>
+                                <div>
+                                    <div class="participant-name">山田太郎（幹事）</div>
+                                    <div class="payment-status paid">
+                                        <span class="material-icons">check_circle</span>
+                                        支払い済み
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="participant-amount">
+                                <div class="amount-value">¥3,000</div>
+                            </div>
+                        </li>
+                        <li class="participant-item">
+                            <div class="participant-info">
+                                <div class="participant-avatar" style="background-color: #4caf50; color: white;">田</div>
+                                <div>
+                                    <div class="participant-name">田中太郎</div>
+                                    <div class="payment-status paid">
+                                        <span class="material-icons">check_circle</span>
+                                        支払い済み
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="participant-amount">
+                                <div class="amount-value">¥3,000</div>
+                            </div>
+                        </li>
+                        <li class="participant-item">
+                            <div class="participant-info">
+                                <div class="participant-avatar" style="background-color: #ff9800; color: white;">佐</div>
+                                <div>
+                                    <div class="participant-name">佐藤花子</div>
+                                    <div class="payment-status pending">
+                                        <span class="material-icons">schedule</span>
+                                        未払い
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="participant-amount">
+                                <div class="amount-value">¥3,000</div>
+                            </div>
+                        </li>
+                        <li class="participant-item">
+                            <div class="participant-info">
+                                <div class="participant-avatar" style="background-color: #9c27b0; color: white;">鈴</div>
+                                <div>
+                                    <div class="participant-name">鈴木一郎</div>
+                                    <div class="payment-status pending">
+                                        <span class="material-icons">schedule</span>
+                                        未払い
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="participant-amount">
+                                <div class="amount-value">¥3,000</div>
+                            </div>
+                        </li>
+                        <li class="participant-item">
+                            <div class="participant-info">
+                                <div class="participant-avatar">高</div>
+                                <div>
+                                    <div class="participant-name">高橋二郎</div>
+                                    <div class="payment-status pending">
+                                        <span class="material-icons">schedule</span>
+                                        未払い
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="participant-amount">
+                                <div class="amount-value">¥3,000</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="button outlined">
+                        <span class="material-icons">notifications</span>
+                        リマインダー送信
+                    </button>
+                    <button class="button primary">
+                        <span class="material-icons">share</span>
+                        支払いリンクを共有
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 新規作成フォームの例 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">新規作成フォームの例：</h3>
+            
+            <div class="create-form">
+                <div class="form-group">
+                    <label>イベント名</label>
+                    <input type="text" placeholder="例：忘年会、ランチ会">
+                    <div class="helper-text">わかりやすい名前を付けてください</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>合計金額</label>
+                    <input type="number" placeholder="15000">
+                    <div class="helper-text">円単位で入力してください</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>参加者数</label>
+                    <select>
+                        <option value="">選択してください</option>
+                        <option value="2">2人</option>
+                        <option value="3">3人</option>
+                        <option value="4">4人</option>
+                        <option value="5">5人</option>
+                        <option value="6">6人以上</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>領収書（任意）</label>
+                    <div class="receipt-upload">
+                        <span class="material-icons">camera_alt</span>
+                        <p>領収書を撮影またはアップロード</p>
+                        <button class="button primary">
+                            画像を選択
+                        </button>
+                    </div>
+                    <div class="helper-text">JPEG、PNG形式（最大5MB）</div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="button outlined">キャンセル</button>
+                    <button class="button primary">
+                        <span class="material-icons">add</span>
+                        作成して参加者を招待
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAB -->
+    <div class="fab">
+        <span class="material-icons">add</span>
+    </div>
+</body>
+</html>

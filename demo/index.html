@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI秘書TASK - UIデモ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .navigation {
+            background-color: #1976d2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .navigation h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+        
+        .demo-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .demo-section h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #1976d2;
+        }
+        
+        .preview-link {
+            display: inline-block;
+            background-color: #1976d2;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .preview-link:hover {
+            background-color: #1565c0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li:before {
+            content: "✓";
+            color: #4caf50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <h1>AI秘書TASK - UIデモ</h1>
+        <p>改善された全てのUIを確認できます</p>
+    </div>
+    
+    <div class="container">
+        <div class="demo-section">
+            <h2>🏠 ホームページ（ダッシュボード）</h2>
+            <p>従来のシンプルなメニューから、充実したダッシュボードに変更しました。</p>
+            <ul class="feature-list">
+                <li>ユーザープロファイルとウェルカムメッセージ</li>
+                <li>統計情報カード（メモ数、割り勘、予定など）</li>
+                <li>クイックアクション（主要機能への素早いアクセス）</li>
+                <li>最近のアクティビティフィード</li>
+                <li>通知システム（未読表示付き）</li>
+                <li>使い方のヒント表示</li>
+            </ul>
+            <a href="home.html" class="preview-link">プレビューを見る →</a>
+        </div>
+        
+        <div class="demo-section">
+            <h2>📝 メモ一覧ページ</h2>
+            <p>メモの管理がより直感的で効率的になりました。</p>
+            <ul class="feature-list">
+                <li>リアルタイムAPI連携</li>
+                <li>検索・フィルタリング機能</li>
+                <li>タグによる分類とフィルター</li>
+                <li>スケルトンローディング</li>
+                <li>エラーハンドリングとリトライ機能</li>
+                <li>削除確認ダイアログ</li>
+                <li>メモ数の表示</li>
+            </ul>
+            <a href="memo-list.html" class="preview-link">プレビューを見る →</a>
+        </div>
+        
+        <div class="demo-section">
+            <h2>✏️ メモ作成・編集ページ</h2>
+            <p>より快適な編集体験を提供します。</p>
+            <ul class="feature-list">
+                <li>自動保存機能（30秒間隔）</li>
+                <li>編集/プレビュータブ切り替え</li>
+                <li>AIによるタグ提案機能</li>
+                <li>下書き保存と復元</li>
+                <li>キーボードショートカット（Ctrl+S）</li>
+                <li>文字数カウント表示</li>
+                <li>フォームバリデーション</li>
+                <li>未保存の変更警告</li>
+            </ul>
+            <a href="memo-create.html" class="preview-link">プレビューを見る →</a>
+        </div>
+        
+        <div class="demo-section">
+            <h2>👥 共有メモ詳細ページ</h2>
+            <p>リアルタイムコラボレーション機能を追加しました。</p>
+            <ul class="feature-list">
+                <li>リアルタイム編集インジケーター</li>
+                <li>編集中のユーザー表示</li>
+                <li>メンバー管理UI</li>
+                <li>権限ベースの表示制御</li>
+                <li>同期状態の表示</li>
+                <li>オフライン対応</li>
+                <li>LINEでの共有機能</li>
+                <li>バージョン履歴へのアクセス</li>
+            </ul>
+            <a href="memo-shared.html" class="preview-link">プレビューを見る →</a>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🎨 デザインシステム</h2>
+            <p>統一されたデザイン要素を使用しています。</p>
+            <ul class="feature-list">
+                <li>Material-UI (MUI) コンポーネント</li>
+                <li>一貫性のあるカラーパレット</li>
+                <li>レスポンシブデザイン</li>
+                <li>アクセシビリティ対応</li>
+                <li>ダークモード対応準備</li>
+                <li>アニメーションとトランジション</li>
+            </ul>
+        </div>
+        
+        <div class="demo-section">
+            <h2>💰 割り勘機能</h2>
+            <p>グループでの支払い管理を簡単に</p>
+            <ul class="feature-list">
+                <li>支払い状況の可視化（進捗バー）</li>
+                <li>参加者ごとの支払い管理</li>
+                <li>領収書の写真アップロード</li>
+                <li>自動リマインダー機能</li>
+                <li>支払いリンクの共有</li>
+                <li>完了・進行中のステータス管理</li>
+            </ul>
+            <a href="warikan.html" class="preview-link">プレビューを見る →</a>
+        </div>
+        
+        <div class="demo-section">
+            <h2>📅 日程調整機能</h2>
+            <p>複数人での予定調整を効率化</p>
+            <ul class="feature-list">
+                <li>カレンダー/リスト表示の切り替え</li>
+                <li>候補日への投票システム</li>
+                <li>回答状況のリアルタイム表示</li>
+                <li>最適な日程の自動提案</li>
+                <li>参加者へのリマインダー送信</li>
+                <li>オンライン/オフライン会議の対応</li>
+            </ul>
+            <a href="schedule.html" class="preview-link">プレビューを見る →</a>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🔧 技術的な改善</h2>
+            <p>パフォーマンスとユーザビリティの向上</p>
+            <ul class="feature-list">
+                <li>React Query によるデータキャッシング</li>
+                <li>楽観的UIアップデート</li>
+                <li>エラーバウンダリー</li>
+                <li>プログレッシブエンハンスメント</li>
+                <li>TypeScriptによる型安全性</li>
+                <li>Zodによるランタイムバリデーション</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

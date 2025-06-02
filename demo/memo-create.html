@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メモ作成 - AI秘書TASK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* ヘッダー */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        
+        .icon-button:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        /* 自動保存スイッチ */
+        .auto-save-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .switch {
+            position: relative;
+            width: 40px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #1976d2;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+        
+        /* アラート */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .alert.warning {
+            background-color: #fff8e1;
+            color: #f57f17;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .alert.info {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .button.small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .button.primary {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .button.primary:hover {
+            background-color: #1565c0;
+        }
+        
+        /* タブ */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+        }
+        
+        .tab .material-icons {
+            font-size: 20px;
+        }
+        
+        /* フォーム */
+        .form-card {
+            background-color: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 200px;
+        }
+        
+        .helper-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .error-text {
+            color: #f44336;
+        }
+        
+        /* タグセクション */
+        .tag-section {
+            margin-bottom: 20px;
+        }
+        
+        .tag-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .tag-header h3 {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .ai-button {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .ai-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .ai-button .material-icons {
+            font-size: 16px;
+            color: #9c27b0;
+        }
+        
+        .tag-input-wrapper {
+            position: relative;
+            margin-bottom: 12px;
+        }
+        
+        .tag-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .current-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: #e0e0e0;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+        
+        .tag .material-icons {
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .suggested-tags {
+            background-color: #f3e5f5;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        
+        .suggested-tags-header {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .suggested-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: white;
+            border: 1px solid #9c27b0;
+            color: #9c27b0;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .suggested-tag:hover {
+            background-color: #9c27b0;
+            color: white;
+        }
+        
+        /* プレビュー */
+        .preview {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        
+        .preview h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        
+        .preview .content {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .preview .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        /* アクションボタン */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .action-buttons .button {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .button.outlined {
+            background-color: transparent;
+            border: 1px solid #1976d2;
+            color: #1976d2;
+        }
+        
+        .button.outlined:hover {
+            background-color: rgba(25,118,210,0.1);
+        }
+        
+        .button:disabled {
+            background-color: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        /* プログレスバー */
+        .progress-bar {
+            height: 4px;
+            background-color: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .progress-bar .bar {
+            height: 100%;
+            background-color: #1976d2;
+            width: 0;
+            animation: progress 1.5s infinite;
+        }
+        
+        @keyframes progress {
+            0% { width: 0; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: #1976d2;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-button .material-icons {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            <span class="material-icons">arrow_back</span>
+            デモ一覧に戻る
+        </a>
+        
+        <!-- ヘッダー -->
+        <div class="header">
+            <div class="header-left">
+                <button class="icon-button">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <h1>メモ作成</h1>
+            </div>
+            <div class="auto-save-switch">
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+                <span>自動保存</span>
+            </div>
+        </div>
+        
+        <!-- 保存状態アラート -->
+        <div class="alert warning">
+            <span>未保存の変更があります</span>
+            <button class="button small primary">今すぐ保存</button>
+        </div>
+        
+        <!-- タブ -->
+        <div class="tabs">
+            <button class="tab active">
+                <span class="material-icons">edit</span>
+                編集
+            </button>
+            <button class="tab">
+                <span class="material-icons">preview</span>
+                プレビュー
+            </button>
+        </div>
+        
+        <!-- 編集フォーム -->
+        <div class="form-card">
+            <div class="form-group">
+                <label>タイトル *</label>
+                <input type="text" placeholder="例: アイデアメモ、買い物リスト" value="新サービスのアイデア">
+                <div class="helper-text">わかりやすいタイトルを入力してください</div>
+            </div>
+            
+            <div class="form-group">
+                <label>内容 *</label>
+                <textarea placeholder="メモの内容を入力してください...">AIを活用した自動スケジュール調整システム
+
+主な機能：
+- カレンダーAPIと連携
+- 参加者の空き時間を自動検出
+- 最適な会議時間を提案
+- リマインダー機能付き
+
+技術スタック：
+- Next.js + TypeScript
+- Google Calendar API
+- OpenAI API for optimization</textarea>
+                <div class="helper-text">245/10000文字 | Ctrl+S で下書き保存</div>
+            </div>
+            
+            <div class="form-group">
+                <label>ページ（任意）</label>
+                <select>
+                    <option value="">なし</option>
+                    <option value="work" selected>📁 仕事</option>
+                    <option value="private">📁 プライベート</option>
+                </select>
+            </div>
+            
+            <!-- タグセクション -->
+            <div class="tag-section">
+                <div class="tag-header">
+                    <h3>タグ</h3>
+                    <button class="ai-button">
+                        <span class="material-icons">auto_awesome</span>
+                        AIで提案
+                    </button>
+                </div>
+                
+                <!-- AI分析中のプログレスバー -->
+                <div class="progress-bar" style="display: none;">
+                    <div class="bar"></div>
+                </div>
+                
+                <div class="tag-input-wrapper">
+                    <input type="text" class="tag-input" placeholder="タグを追加... (Enterで確定)">
+                </div>
+                
+                <div class="current-tags">
+                    <div class="tag">
+                        <span class="material-icons">local_offer</span>
+                        アイデア
+                        <span class="material-icons">close</span>
+                    </div>
+                    <div class="tag">
+                        <span class="material-icons">local_offer</span>
+                        仕事
+                        <span class="material-icons">close</span>
+                    </div>
+                </div>
+                
+                <div class="helper-text">2/10個のタグ</div>
+                
+                <!-- AI提案タグ -->
+                <div class="suggested-tags">
+                    <div class="suggested-tags-header">AIが提案したタグ</div>
+                    <span class="suggested-tag">
+                        <span class="material-icons">add</span>
+                        プロジェクト
+                    </span>
+                    <span class="suggested-tag">
+                        <span class="material-icons">add</span>
+                        AI
+                    </span>
+                    <span class="suggested-tag">
+                        <span class="material-icons">add</span>
+                        開発
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- プレビュー（タブ切り替え時に表示） -->
+        <div class="form-card" style="display: none;">
+            <h3 style="font-size: 14px; color: #666; margin-bottom: 12px;">プレビュー</h3>
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 16px;">
+                <div class="preview">
+                    <h3>新サービスのアイデア</h3>
+                    <div class="content">AIを活用した自動スケジュール調整システム
+
+主な機能：
+- カレンダーAPIと連携
+- 参加者の空き時間を自動検出
+- 最適な会議時間を提案
+- リマインダー機能付き
+
+技術スタック：
+- Next.js + TypeScript
+- Google Calendar API
+- OpenAI API for optimization</div>
+                    <div class="tags">
+                        <div class="tag">
+                            <span class="material-icons">local_offer</span>
+                            アイデア
+                        </div>
+                        <div class="tag">
+                            <span class="material-icons">local_offer</span>
+                            仕事
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- アクションボタン -->
+        <div class="action-buttons">
+            <button class="button outlined">
+                キャンセル
+            </button>
+            <button class="button outlined">
+                <span class="material-icons">schedule</span>
+                下書き保存
+            </button>
+            <button class="button primary">
+                <span class="material-icons">save</span>
+                作成
+            </button>
+        </div>
+        
+        <!-- 保存状態の別パターン -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">その他の保存状態表示例：</h3>
+            
+            <div class="alert info">
+                <span>下書きが保存されています</span>
+            </div>
+            
+            <div class="alert info">
+                <span>最後の保存: 14:32:15</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
