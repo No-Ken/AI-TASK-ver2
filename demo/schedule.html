@@ -390,6 +390,556 @@
             margin-left: 0;
         }
         
+        /* 日程選択UI */
+        .response-candidate-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+        
+        .response-candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .response-candidate-date {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .response-options {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .response-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 18px;
+        }
+        
+        .response-option.ok {
+            border-color: #4caf50;
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .response-option.maybe {
+            border-color: #ff9800;
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .response-option.ng {
+            border-color: #f44336;
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .response-option:hover {
+            opacity: 0.8;
+        }
+        
+        .response-option:not(.ok):not(.maybe):not(.ng):hover {
+            border-color: #1976d2;
+            background-color: #f5f5f5;
+        }
+        
+        .response-status-indicator {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        /* 集計結果表示 */
+        .vote-breakdown {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        
+        .vote-type {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .vote-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        
+        .vote-icon.ok {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .vote-icon.maybe {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .vote-icon.ng {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        /* 最適日程提案 */
+        .recommended-date {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        
+        .recommended-date::before {
+            content: '✨';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 20px;
+        }
+        
+        .recommended-title {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+        
+        .recommended-text {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        /* 日程選択UI（Googleカレンダー風） */
+        .date-selection-modes {
+            display: flex;
+            background-color: white;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .mode-tab {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 13px;
+            color: #666;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .mode-tab.active {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        /* カレンダー選択モード */
+        .calendar-selection {
+            background-color: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-month-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .month-nav {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            color: #666;
+        }
+        
+        .month-nav:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .month-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .calendar-grid-extended {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        
+        .calendar-day-extended {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .calendar-day-extended:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .calendar-day-extended.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .calendar-day-extended.selected {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .calendar-day-extended.today {
+            border: 2px solid #ff9800;
+        }
+        
+        .calendar-day-extended.range-selecting {
+            background-color: #bbdefb !important;
+            color: #1976d2;
+        }
+        
+        .calendar-day-extended.range-start {
+            background-color: #1976d2 !important;
+            color: white;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+        }
+        
+        .calendar-day-extended.range-end {
+            background-color: #1976d2 !important;
+            color: white;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        
+        .calendar-day-extended.range-middle {
+            background-color: #bbdefb !important;
+            color: #1976d2;
+            border-radius: 0;
+        }
+        
+        /* 選択済み日付のスタイル */
+        .calendar-day-extended.selected {
+            background-color: #1976d2 !important;
+            color: white !important;
+            font-weight: 500;
+        }
+        
+        .calendar-day-extended.selected:hover {
+            background-color: #1565c0 !important;
+        }
+        
+        /* 時間パターン設定 */
+        .time-pattern-settings {
+            background-color: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .pattern-options {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .pattern-option {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .pattern-option.active {
+            border-color: #1976d2;
+            background-color: #e3f2fd;
+        }
+        
+        .pattern-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .pattern-desc {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .time-config {
+            margin-top: 16px;
+        }
+        
+        .time-input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .time-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .weekday-config {
+            margin-top: 16px;
+        }
+        
+        .weekday-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .weekday-item:last-child {
+            border-bottom: none;
+        }
+        
+        .weekday-name {
+            font-size: 14px;
+            min-width: 40px;
+        }
+        
+        .weekday-times {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .weekday-time-input {
+            width: 70px;
+            padding: 4px 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        /* 週24時間表示（Googleカレンダー風） */
+        .weekly-schedule {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .weekly-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .week-nav {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            color: #666;
+        }
+        
+        .week-nav:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .week-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .weekly-grid-container {
+            overflow: auto;
+            max-height: 600px;
+        }
+        
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            min-width: 800px;
+            background-color: white;
+        }
+        
+        .weekly-corner {
+            background-color: white;
+            border-right: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        
+        .weekly-day-header {
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            border-right: 1px solid #f0f0f0;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        
+        .weekly-day-name {
+            color: #666;
+            font-size: 11px;
+        }
+        
+        .weekly-day-date {
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        
+        .weekly-day-date.today {
+            background-color: #1976d2;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        
+        .schedule-header {
+            background-color: #f5f5f5;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+        
+        .schedule-time {
+            background-color: white;
+            padding: 8px 4px;
+            text-align: right;
+            font-size: 11px;
+            color: #666;
+            border-right: 1px solid #e0e0e0;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .schedule-cell {
+            border-right: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+            min-height: 40px;
+            cursor: pointer;
+            transition: background-color 0.1s;
+            position: relative;
+        }
+        
+        .schedule-cell:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .schedule-cell.selected {
+            background-color: #1976d2;
+        }
+        
+        .schedule-cell.range-start {
+            background-color: #1976d2;
+        }
+        
+        .schedule-cell.range-middle {
+            background-color: #bbdefb;
+        }
+        
+        .schedule-cell.range-end {
+            background-color: #1976d2;
+        }
+        
+        .schedule-cell.unavailable {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+        
+        /* 選択された候補日の表示 */
+        .selected-candidates {
+            background-color: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .candidate-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 8px 12px;
+            border-radius: 20px;
+            margin: 4px;
+            font-size: 13px;
+        }
+        
+        .candidate-chip .remove-btn {
+            background: none;
+            border: none;
+            color: #1976d2;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+        
+        .candidate-summary {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
         /* 回答状況 */
         .response-list {
             list-style: none;
@@ -624,9 +1174,9 @@
         
         <!-- 表示切り替え -->
         <div class="view-toggle">
-            <button class="view-option active">カレンダー</button>
-            <button class="view-option">リスト</button>
+            <button class="view-option active">今日</button>
             <button class="view-option">調整中</button>
+            <button class="view-option">カレンダー</button>
         </div>
         
         <!-- カレンダー -->
@@ -723,16 +1273,30 @@
             </div>
         </div>
         
-        <!-- 調整中の予定 -->
+        <!-- コマンド使用例 -->
+        <div style="margin-bottom: 15px;">
+            <h3 style="color: #666; font-size: 16px; margin-bottom: 10px;">コマンド例: @AI秘書 TASK 日程調整</h3>
+        </div>
+        
+        <!-- 日程調整プロジェクト一覧 -->
         <div class="event-list">
             <div class="event-list-header">
-                <div class="event-list-title">調整中の予定</div>
+                <div class="event-list-title">日程調整プロジェクト一覧</div>
             </div>
+            
+            <!-- 進行中のプロジェクト -->
+            <div style="margin: 0 0 10px 0;">
+                <h4 style="font-size: 14px; color: #666; display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons" style="font-size: 16px;">schedule</span>
+                    調整中のプロジェクト
+                </h4>
+            </div>
+            
             <div class="event-item">
                 <div class="event-header">
                     <div>
-                        <div class="event-title">新年会</div>
-                        <div class="event-time">候補日: 1/10-1/20</div>
+                        <div class="event-title">新年会の日程調整</div>
+                        <div class="event-time">期限: 12月25日 • 2024/12/20 作成</div>
                     </div>
                     <div class="event-status pending">
                         <span class="material-icons" style="font-size: 14px;">schedule</span>
@@ -740,13 +1304,105 @@
                     </div>
                 </div>
                 <div class="event-participants">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="font-size: 12px; color: #666;">最有力:</div>
+                        <div style="font-size: 14px; font-weight: 500;">1/12(金) 19:00〜</div>
+                    </div>
+                    <div style="margin-top: 4px;">
+                        <div class="avatar-group">
+                            <div class="avatar" style="background-color: #4caf50; color: white;">山</div>
+                            <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                            <div class="avatar" style="background-color: #4caf50; color: white;">佐</div>
+                            <div class="avatar" style="background-color: #ff9800; color: white;">鈴</div>
+                            <div class="avatar" style="background-color: #ff9800; color: white;">高</div>
+                        </div>
+                        <span class="participant-count">3/5人回答</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 新規作成 -->
+            <div style="margin: 20px 0 10px 0;">
+                <h4 style="font-size: 14px; color: #666; display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons" style="font-size: 16px;">add_circle</span>
+                    新規作成
+                </h4>
+            </div>
+            
+            <div class="event-item" style="border: 2px dashed #ff9800; background-color: #fffbf0;">
+                <div class="event-header">
+                    <div>
+                        <div class="event-title" style="color: #ff9800; display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons">add_circle</span>
+                            新規日程調整を作成
+                        </div>
+                        <div class="event-time" style="color: #ff9800;">開発チーム（グループ名）</div>
+                    </div>
+                    <div class="event-status" style="background-color: #fff3e0; color: #ff9800;">
+                        <span class="material-icons" style="font-size: 14px;">rocket_launch</span>
+                        LIFF起動
+                    </div>
+                </div>
+                <div class="event-participants">
                     <div class="avatar-group">
                         <div class="avatar" style="background-color: #1976d2; color: white;">山</div>
                         <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
                         <div class="avatar" style="background-color: #ff9800; color: white;">佐</div>
-                        <div class="avatar">+2</div>
+                        <div class="avatar" style="background-color: #9c27b0; color: white;">鈴</div>
+                        <div class="avatar">+1</div>
                     </div>
-                    <span class="participant-count">3/5人回答</span>
+                    <span class="participant-count">5人検出済み</span>
+                </div>
+            </div>
+            
+            <!-- 完了済みプロジェクト -->
+            <div style="margin: 20px 0 10px 0;">
+                <h4 style="font-size: 14px; color: #666; display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons" style="font-size: 16px;">history</span>
+                    完了済みプロジェクト（新しい順）
+                </h4>
+            </div>
+            
+            <div class="event-item">
+                <div class="event-header">
+                    <div>
+                        <div class="event-title">開発チーム 定例会議</div>
+                        <div class="event-time">確定: 12/25(月) 14:00〜 • 2024/12/15 作成</div>
+                    </div>
+                    <div class="event-status confirmed">
+                        <span class="material-icons" style="font-size: 14px;">check_circle</span>
+                        確定済み
+                    </div>
+                </div>
+                <div class="event-participants">
+                    <div class="avatar-group">
+                        <div class="avatar" style="background-color: #4caf50; color: white;">山</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">佐</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">鈴</div>
+                    </div>
+                    <span class="participant-count">4名参加予定</span>
+                </div>
+            </div>
+            
+            <div class="event-item">
+                <div class="event-header">
+                    <div>
+                        <div class="event-title">忘年会の日程調整</div>
+                        <div class="event-time">確定: 12/20(金) 19:00〜 • 2024/12/01 作成</div>
+                    </div>
+                    <div class="event-status confirmed">
+                        <span class="material-icons" style="font-size: 14px;">check_circle</span>
+                        確定済み
+                    </div>
+                </div>
+                <div class="event-participants">
+                    <div class="avatar-group">
+                        <div class="avatar" style="background-color: #4caf50; color: white;">山</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">佐</div>
+                    </div>
+                    <span class="participant-count">3名参加</span>
                 </div>
             </div>
         </div>
@@ -772,50 +1428,103 @@
                 </div>
                 
                 <div class="candidate-section">
-                    <h3 class="section-title">候補日時</h3>
+                    <div class="recommended-date">
+                        <div class="recommended-title">おすすめ日程</div>
+                        <div class="recommended-text">1月12日（金）19:00〜 - 4/5人が参加可能</div>
+                    </div>
+                    
+                    <h3 class="section-title">候補日時の集計結果</h3>
                     <div class="candidate-list">
                         <div class="candidate-item selected">
-                            <div class="candidate-date">1月12日（金）19:00〜</div>
+                            <div class="candidate-date">1月12日（金）19:00〜21:00</div>
                             <div class="candidate-votes">
                                 <div class="vote-bar">
                                     <div class="vote-fill" style="width: 80%;"></div>
                                 </div>
-                                <div class="vote-count">4/5人 ◯</div>
+                                <div class="vote-count">4/5人 参加可能</div>
+                            </div>
+                            <div class="vote-breakdown">
+                                <div class="vote-type">
+                                    <div class="vote-icon ok">◯</div>
+                                    <span>4人</span>
+                                </div>
+                                <div class="vote-type">
+                                    <div class="vote-icon maybe">△</div>
+                                    <span>0人</span>
+                                </div>
+                                <div class="vote-type">
+                                    <div class="vote-icon ng">×</div>
+                                    <span>1人</span>
+                                </div>
                             </div>
                             <div class="voter-avatars">
-                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">山</div>
-                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">田</div>
-                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">佐</div>
-                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">鈴</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;" title="山田太郎 - ◯">山</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;" title="田中花子 - ◯">田</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;" title="佐藤一郎 - ◯">佐</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;" title="鈴木次郎 - ◯">鈴</div>
+                                <div class="voter-avatar" style="background-color: #f44336; color: white;" title="高橋三郎 - ×">高</div>
                             </div>
                         </div>
                         
                         <div class="candidate-item">
-                            <div class="candidate-date">1月15日（月）19:00〜</div>
+                            <div class="candidate-date">1月15日（月）19:00〜21:00</div>
                             <div class="candidate-votes">
                                 <div class="vote-bar">
                                     <div class="vote-fill" style="width: 60%;"></div>
                                 </div>
-                                <div class="vote-count">3/5人 ◯</div>
+                                <div class="vote-count">3/5人 参加可能</div>
+                            </div>
+                            <div class="vote-breakdown">
+                                <div class="vote-type">
+                                    <div class="vote-icon ok">◯</div>
+                                    <span>2人</span>
+                                </div>
+                                <div class="vote-type">
+                                    <div class="vote-icon maybe">△</div>
+                                    <span>1人</span>
+                                </div>
+                                <div class="vote-type">
+                                    <div class="vote-icon ng">×</div>
+                                    <span>2人</span>
+                                </div>
                             </div>
                             <div class="voter-avatars">
-                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">山</div>
-                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">田</div>
-                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">佐</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;" title="山田太郎 - ◯">山</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;" title="田中花子 - ◯">田</div>
+                                <div class="voter-avatar" style="background-color: #ff9800; color: white;" title="佐藤一郎 - △">佐</div>
+                                <div class="voter-avatar" style="background-color: #f44336; color: white;" title="鈴木次郎 - ×">鈴</div>
+                                <div class="voter-avatar" style="background-color: #f44336; color: white;" title="高橋三郎 - ×">高</div>
                             </div>
                         </div>
                         
                         <div class="candidate-item">
-                            <div class="candidate-date">1月19日（金）19:00〜</div>
+                            <div class="candidate-date">1月19日（金）19:00〜21:00</div>
                             <div class="candidate-votes">
                                 <div class="vote-bar">
                                     <div class="vote-fill" style="width: 40%;"></div>
                                 </div>
-                                <div class="vote-count">2/5人 ◯</div>
+                                <div class="vote-count">2/5人 参加可能</div>
+                            </div>
+                            <div class="vote-breakdown">
+                                <div class="vote-type">
+                                    <div class="vote-icon ok">◯</div>
+                                    <span>2人</span>
+                                </div>
+                                <div class="vote-type">
+                                    <div class="vote-icon maybe">△</div>
+                                    <span>1人</span>
+                                </div>
+                                <div class="vote-type">
+                                    <div class="vote-icon ng">×</div>
+                                    <span>2人</span>
+                                </div>
                             </div>
                             <div class="voter-avatars">
-                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">山</div>
-                                <div class="voter-avatar" style="background-color: #4caf50; color: white;">鈴</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;" title="山田太郎 - ◯">山</div>
+                                <div class="voter-avatar" style="background-color: #ff9800; color: white;" title="田中花子 - △">田</div>
+                                <div class="voter-avatar" style="background-color: #f44336; color: white;" title="佐藤一郎 - ×">佐</div>
+                                <div class="voter-avatar" style="background-color: #4caf50; color: white;" title="鈴木次郎 - ◯">鈴</div>
+                                <div class="voter-avatar" style="background-color: #f44336; color: white;" title="高橋三郎 - ×">高</div>
                             </div>
                         </div>
                     </div>
@@ -890,59 +1599,697 @@
             </div>
         </div>
         
-        <!-- 新規作成フォームの例 -->
+        <!-- スタンプ連携での日程調整開始 -->
         <div style="margin-top: 40px;">
-            <h3 style="margin-bottom: 15px; color: #666;">新規作成フォームの例：</h3>
+            <h3 style="margin-bottom: 15px; color: #666;">スタンプ連携での日程調整例：</h3>
             
-            <div class="create-form">
-                <div class="form-group">
-                    <label>イベント名</label>
-                    <input type="text" placeholder="例：会議、飲み会、勉強会">
-                    <div class="helper-text">参加者にわかりやすい名前を付けてください</div>
+            <div class="chat-simulation" style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <div class="chat-message user" style="background-color: #1976d2; color: white; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-left: auto; max-width: 80%;">
+                    <div style="text-align: center; font-size: 32px; margin: 10px 0;">📅</div>
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">14:32</div>
                 </div>
                 
-                <div class="form-group">
-                    <label>説明（任意）</label>
-                    <textarea placeholder="イベントの詳細や議題など"></textarea>
+                <div class="chat-message bot" style="background-color: #f5f5f5; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-right: auto; max-width: 80%;">
+                    日程調整を開始します📅<br><br>
+                    📱 LIFF アプリで日程調整を作成します...
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">14:32</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LINEトーク回答フロー -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">参加者の回答フロー例：</h3>
+            
+            <div class="chat-simulation" style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <div class="chat-message bot" style="background-color: #f5f5f5; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-right: auto; max-width: 80%;">
+                    📅 <strong>新年会の日程調整</strong><br><br>
+                    以下の候補日からご都合の良い日を選んでください：<br><br>
+                    A. 1月12日（金）19:00-21:00<br>
+                    B. 1月15日（月）19:00-21:00<br>
+                    C. 1月19日（金）19:00-21:00<br><br>
+                    回答例: A, B （複数選択可）
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">15:00</div>
                 </div>
                 
-                <div class="form-group">
-                    <label>候補日時</label>
-                    <div class="date-picker">
-                        <div class="date-slot selected">
-                            <div class="date">12月15日（金）</div>
-                            <div class="time">19:00-21:00</div>
-                        </div>
-                        <div class="date-slot">
-                            <div class="date">12月18日（月）</div>
-                            <div class="time">19:00-21:00</div>
-                        </div>
-                        <div class="date-slot selected">
-                            <div class="date">12月20日（水）</div>
-                            <div class="time">19:00-21:00</div>
-                        </div>
-                        <div class="date-slot">
-                            <div class="date">12月22日（金）</div>
-                            <div class="time">19:00-21:00</div>
-                        </div>
+                <div class="chat-message user" style="background-color: #1976d2; color: white; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-left: auto; max-width: 80%;">
+                    A, B
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">15:02</div>
+                </div>
+                
+                <div class="chat-message bot" style="background-color: #f5f5f5; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-right: auto; max-width: 80%;">
+                    ✅ 回答ありがとうございます！<br><br>
+                    📊 <strong>現在の状況</strong><br>
+                    A. 1月12日（金）: 4/5人 ◯<br>
+                    B. 1月15日（月）: 3/5人 ◯<br>
+                    C. 1月19日（金）: 2/5人 ◯<br><br>
+                    全員の回答が揃い次第、最適な日程をお知らせします。
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">15:02</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 日程確定通知 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">日程確定通知例：</h3>
+            
+            <div class="chat-simulation" style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <div class="chat-message bot" style="background-color: #e8f5e9; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-right: auto; max-width: 80%; border-left: 4px solid #4caf50;">
+                    🎉 <strong>日程が確定しました！</strong><br><br>
+                    📅 <strong>新年会</strong><br>
+                    🗓️ 1月12日（金）19:00-21:00<br>
+                    📍 場所: 居酒屋「花」<br>
+                    👥 参加者: 5名<br><br>
+                    📱 LINEカレンダーに追加済み<br>
+                    🔔 開始1時間前にリマインドします
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">16:30</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 自動リマインダー機能 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">自動リマインダー機能：</h3>
+            
+            <div class="schedule-detail">
+                <div class="section-title">
+                    <span class="material-icons">notifications</span>
+                    リマインダー設定
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span>未回答者への催促（調整開始から24時間後）</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span>調整期限3日前の再催促</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span>イベント1時間前のリマインド</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox">
+                        <span>イベント1日前のリマインド</span>
+                    </label>
+                </div>
+                
+                <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4 style="font-size: 14px; margin-bottom: 8px; color: #666;">リマインドメッセージ例:</h4>
+                    <div style="background-color: white; padding: 12px; border-radius: 8px; font-size: 14px; border-left: 4px solid #ff9800;">
+                        📅 <strong>日程調整の回答お願い</strong><br><br>
+                        「新年会」の日程調整にまだ回答いただいていません。<br><br>
+                        🗓️ 候補日程をご確認ください<br>
+                        ⏰ 回答期限: 12月25日まで<br><br>
+                        詳細はLIFFアプリでご確認いただけます。
                     </div>
-                    <button class="button outlined" style="margin-top: 12px;">
-                        <span class="material-icons">add</span>
-                        候補日時を追加
-                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 参加者の回答画面 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">参加者の回答画面（LIFF）：</h3>
+            
+            <div class="schedule-detail">
+                <h2 class="detail-title">新年会の日程調整</h2>
+                
+                <div class="detail-info">
+                    <span class="material-icons">person</span>
+                    山田太郎 として回答中
+                </div>
+                <div class="detail-info">
+                    <span class="material-icons">schedule</span>
+                    回答期限: 12月25日まで
                 </div>
                 
-                <div class="form-group">
-                    <label>場所（任意）</label>
-                    <input type="text" placeholder="例：第1会議室、オンライン">
+                <div class="candidate-section">
+                    <h3 class="section-title">候補日時を選択してください</h3>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 16px;">
+                        ◯：参加できます　△：調整可能　×：参加できません
+                    </p>
+                    
+                    <div class="response-candidate-item">
+                        <div class="response-candidate-header">
+                            <div class="response-candidate-date">1月12日（金）19:00〜21:00</div>
+                            <div class="response-options">
+                                <div class="response-option ok" title="参加できます">◯</div>
+                                <div class="response-option" title="調整可能">△</div>
+                                <div class="response-option" title="参加できません">×</div>
+                            </div>
+                        </div>
+                        <div class="response-status-indicator">選択済み: 参加できます</div>
+                    </div>
+                    
+                    <div class="response-candidate-item">
+                        <div class="response-candidate-header">
+                            <div class="response-candidate-date">1月15日（月）19:00〜21:00</div>
+                            <div class="response-options">
+                                <div class="response-option ok" title="参加できます">◯</div>
+                                <div class="response-option" title="調整可能">△</div>
+                                <div class="response-option" title="参加できません">×</div>
+                            </div>
+                        </div>
+                        <div class="response-status-indicator">選択済み: 参加できます</div>
+                    </div>
+                    
+                    <div class="response-candidate-item">
+                        <div class="response-candidate-header">
+                            <div class="response-candidate-date">1月19日（金）19:00〜21:00</div>
+                            <div class="response-options">
+                                <div class="response-option" title="参加できます">◯</div>
+                                <div class="response-option maybe" title="調整可能">△</div>
+                                <div class="response-option" title="参加できません">×</div>
+                            </div>
+                        </div>
+                        <div class="response-status-indicator">選択済み: 調整可能</div>
+                    </div>
+                </div>
+                
+                <div class="candidate-section">
+                    <h3 class="section-title">コメント（任意）</h3>
+                    <textarea style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit;" placeholder="時間の変更希望や、その他のご要望があればお書きください">19日は18:30開始なら参加できます</textarea>
                 </div>
                 
                 <div class="action-buttons">
                     <button class="button outlined">キャンセル</button>
                     <button class="button primary">
                         <span class="material-icons">send</span>
-                        作成して参加者に送信
+                        回答を送信
                     </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 日程調整一覧表示 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">リスト表示での日程管理：</h3>
+            
+            <div class="event-list">
+                <div class="event-list-header">
+                    <div class="event-list-title">今月の日程調整</div>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-header">
+                        <div>
+                            <div class="event-title">新年会</div>
+                            <div class="event-time">期限: 12月25日 • 3候補日</div>
+                        </div>
+                        <div class="event-status pending">
+                            <span class="material-icons" style="font-size: 14px;">schedule</span>
+                            調整中
+                        </div>
+                    </div>
+                    <div class="event-participants">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 12px; color: #666;">最有力候補:</div>
+                            <div style="font-size: 14px; font-weight: 500;">1月12日（金）19:00〜</div>
+                        </div>
+                        <div style="margin-top: 4px;">
+                            <div class="avatar-group">
+                                <div class="avatar" style="background-color: #4caf50; color: white;" title="回答済み">山</div>
+                                <div class="avatar" style="background-color: #4caf50; color: white;" title="回答済み">田</div>
+                                <div class="avatar" style="background-color: #4caf50; color: white;" title="回答済み">佐</div>
+                                <div class="avatar" style="background-color: #ff9800; color: white;" title="未回答">鈴</div>
+                                <div class="avatar" style="background-color: #ff9800; color: white;" title="未回答">高</div>
+                            </div>
+                            <span class="participant-count">3/5人回答済み</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-header">
+                        <div>
+                            <div class="event-title">開発チーム 定例会議</div>
+                            <div class="event-time">確定日: 12月25日（月）14:00〜</div>
+                        </div>
+                        <div class="event-status confirmed">
+                            <span class="material-icons" style="font-size: 14px;">check_circle</span>
+                            確定済み
+                        </div>
+                    </div>
+                    <div class="event-participants">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="font-size: 12px; color: #666;">確定日程:</div>
+                            <div style="font-size: 14px; font-weight: 500;">12月25日（月）14:00〜</div>
+                        </div>
+                        <div style="margin-top: 4px;">
+                            <div class="avatar-group">
+                                <div class="avatar" style="background-color: #4caf50; color: white;">山</div>
+                                <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                                <div class="avatar" style="background-color: #4caf50; color: white;">佐</div>
+                                <div class="avatar" style="background-color: #4caf50; color: white;">鈴</div>
+                            </div>
+                            <span class="participant-count">4名参加予定</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 新規プロジェクト作成ページ -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">新規プロジェクト作成ページ（LIFF）：</h3>
+            
+            <div class="create-form">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background-color: #fff3e0; border-radius: 50%; margin-bottom: 16px;">
+                        <span class="material-icons" style="font-size: 32px; color: #ff9800;">event</span>
+                    </div>
+                    <h2 style="font-size: 24px; margin-bottom: 8px;">新規日程調整</h2>
+                    <p style="color: #666; font-size: 14px;">グループメンバーでの日程調整を作成します</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>イベント名</label>
+                    <input type="text" placeholder="例：新年会、会議、勉強会" value="">
+                    <div class="helper-text">参加者にわかりやすい名前を付けてください</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>説明（任意）</label>
+                    <textarea placeholder="イベントの詳細や議題があれば記入してください"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>候補日時を選択</label>
+                    <div style="margin-bottom: 16px;">
+                        <p style="color: #666; font-size: 14px;">複数の候補日を選択してください（3〜5個推奨）</p>
+                    </div>
+                    
+                    <!-- 選択モード切り替え -->
+                    <div class="date-selection-modes">
+                        <button class="mode-tab active" data-mode="calendar">📅 カレンダー</button>
+                        <button class="mode-tab" data-mode="weekly">📊 週間表示</button>
+                    </div>
+                    
+                    <!-- カレンダー選択モード -->
+                    <div class="calendar-selection" id="calendar-mode">
+                        <!-- 時間パターン設定 -->
+                        <div class="time-pattern-settings">
+                            <div class="pattern-options">
+                                <div class="pattern-option active" data-pattern="same">
+                                    <div class="pattern-title">一定時間</div>
+                                    <div class="pattern-desc">全日程同じ時間</div>
+                                </div>
+                                <div class="pattern-option" data-pattern="weekday">
+                                    <div class="pattern-title">曜日別</div>
+                                    <div class="pattern-desc">曜日により時間変更</div>
+                                </div>
+                            </div>
+                            
+                            <div class="time-config" id="same-time-config">
+                                <div class="time-input-group">
+                                    <label style="min-width: 60px;">開始時間:</label>
+                                    <input type="time" class="time-input" value="19:00">
+                                    <span>〜</span>
+                                    <input type="time" class="time-input" value="21:00">
+                                    <label>終了時間</label>
+                                </div>
+                            </div>
+                            
+                            <div class="weekday-config" id="weekday-time-config" style="display: none;">
+                                <div class="weekday-item">
+                                    <span class="weekday-name">月</span>
+                                    <div class="weekday-times">
+                                        <input type="time" class="weekday-time-input" value="19:00">
+                                        <span>〜</span>
+                                        <input type="time" class="weekday-time-input" value="21:00">
+                                    </div>
+                                </div>
+                                <div class="weekday-item">
+                                    <span class="weekday-name">火</span>
+                                    <div class="weekday-times">
+                                        <input type="time" class="weekday-time-input" value="19:00">
+                                        <span>〜</span>
+                                        <input type="time" class="weekday-time-input" value="21:00">
+                                    </div>
+                                </div>
+                                <div class="weekday-item">
+                                    <span class="weekday-name">水</span>
+                                    <div class="weekday-times">
+                                        <input type="time" class="weekday-time-input" value="19:00">
+                                        <span>〜</span>
+                                        <input type="time" class="weekday-time-input" value="21:00">
+                                    </div>
+                                </div>
+                                <div class="weekday-item">
+                                    <span class="weekday-name">木</span>
+                                    <div class="weekday-times">
+                                        <input type="time" class="weekday-time-input" value="19:00">
+                                        <span>〜</span>
+                                        <input type="time" class="weekday-time-input" value="21:00">
+                                    </div>
+                                </div>
+                                <div class="weekday-item">
+                                    <span class="weekday-name">金</span>
+                                    <div class="weekday-times">
+                                        <input type="time" class="weekday-time-input" value="19:00">
+                                        <span>〜</span>
+                                        <input type="time" class="weekday-time-input" value="21:00">
+                                    </div>
+                                </div>
+                                <div class="weekday-item">
+                                    <span class="weekday-name">土</span>
+                                    <div class="weekday-times">
+                                        <input type="time" class="weekday-time-input" value="18:00">
+                                        <span>〜</span>
+                                        <input type="time" class="weekday-time-input" value="20:00">
+                                    </div>
+                                </div>
+                                <div class="weekday-item">
+                                    <span class="weekday-name">日</span>
+                                    <div class="weekday-times">
+                                        <input type="time" class="weekday-time-input" value="18:00">
+                                        <span>〜</span>
+                                        <input type="time" class="weekday-time-input" value="20:00">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- カレンダー部分 -->
+                        <div class="calendar-month-selector">
+                            <button class="month-nav" id="prev-month">‹</button>
+                            <div class="month-title" id="current-month">2025年1月</div>
+                            <button class="month-nav" id="next-month">›</button>
+                        </div>
+                        
+                        <div class="selection-instruction" style="margin-bottom: 12px; font-size: 14px; color: #666;">
+                            タップ：選択/解除　ドラッグ：範囲選択
+                        </div>
+                        
+                        <div class="calendar-grid-extended">
+                            <div class="calendar-day-header">日</div>
+                            <div class="calendar-day-header">月</div>
+                            <div class="calendar-day-header">火</div>
+                            <div class="calendar-day-header">水</div>
+                            <div class="calendar-day-header">木</div>
+                            <div class="calendar-day-header">金</div>
+                            <div class="calendar-day-header">土</div>
+                            
+                            <!-- 1月のカレンダー -->
+                            <div class="calendar-day-extended disabled">29</div>
+                            <div class="calendar-day-extended disabled">30</div>
+                            <div class="calendar-day-extended disabled">31</div>
+                            <div class="calendar-day-extended" data-date="2025-01-01">1</div>
+                            <div class="calendar-day-extended" data-date="2025-01-02">2</div>
+                            <div class="calendar-day-extended" data-date="2025-01-03">3</div>
+                            <div class="calendar-day-extended" data-date="2025-01-04">4</div>
+                            
+                            <div class="calendar-day-extended" data-date="2025-01-05">5</div>
+                            <div class="calendar-day-extended" data-date="2025-01-06">6</div>
+                            <div class="calendar-day-extended" data-date="2025-01-07">7</div>
+                            <div class="calendar-day-extended" data-date="2025-01-08">8</div>
+                            <div class="calendar-day-extended" data-date="2025-01-09">9</div>
+                            <div class="calendar-day-extended" data-date="2025-01-10">10</div>
+                            <div class="calendar-day-extended" data-date="2025-01-11">11</div>
+                            
+                            <div class="calendar-day-extended" data-date="2025-01-12">12</div>
+                            <div class="calendar-day-extended" data-date="2025-01-13">13</div>
+                            <div class="calendar-day-extended" data-date="2025-01-14">14</div>
+                            <div class="calendar-day-extended" data-date="2025-01-15">15</div>
+                            <div class="calendar-day-extended" data-date="2025-01-16">16</div>
+                            <div class="calendar-day-extended" data-date="2025-01-17">17</div>
+                            <div class="calendar-day-extended" data-date="2025-01-18">18</div>
+                            
+                            <div class="calendar-day-extended" data-date="2025-01-19">19</div>
+                            <div class="calendar-day-extended" data-date="2025-01-20">20</div>
+                            <div class="calendar-day-extended" data-date="2025-01-21">21</div>
+                            <div class="calendar-day-extended" data-date="2025-01-22">22</div>
+                            <div class="calendar-day-extended" data-date="2025-01-23">23</div>
+                            <div class="calendar-day-extended" data-date="2025-01-24">24</div>
+                            <div class="calendar-day-extended" data-date="2025-01-25">25</div>
+                            
+                            <div class="calendar-day-extended" data-date="2025-01-26">26</div>
+                            <div class="calendar-day-extended" data-date="2025-01-27">27</div>
+                            <div class="calendar-day-extended" data-date="2025-01-28">28</div>
+                            <div class="calendar-day-extended" data-date="2025-01-29">29</div>
+                            <div class="calendar-day-extended" data-date="2025-01-30">30</div>
+                            <div class="calendar-day-extended" data-date="2025-01-31">31</div>
+                            <div class="calendar-day-extended disabled">1</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 週間スケジュール表示モード -->
+                    <div class="weekly-schedule" id="weekly-mode" style="display: none;">
+                        <div class="weekly-header">
+                            <button class="week-nav" id="prev-week">‹</button>
+                            <div class="week-title" id="current-week">2025年 6月</div>
+                            <button class="week-nav" id="next-week">›</button>
+                        </div>
+                        
+                        <div class="weekly-grid-container">
+                            <div class="schedule-grid">
+                                <!-- 日付ヘッダー -->
+                                <div class="weekly-corner"></div>
+                                <div class="weekly-day-header">
+                                    <div class="weekly-day-name">日</div>
+                                    <div class="weekly-day-date">1</div>
+                                </div>
+                                <div class="weekly-day-header">
+                                    <div class="weekly-day-name">月</div>
+                                    <div class="weekly-day-date">2</div>
+                                </div>
+                                <div class="weekly-day-header">
+                                    <div class="weekly-day-name">火</div>
+                                    <div class="weekly-day-date today">3</div>
+                                </div>
+                                <div class="weekly-day-header">
+                                    <div class="weekly-day-name">水</div>
+                                    <div class="weekly-day-date">4</div>
+                                </div>
+                                <div class="weekly-day-header">
+                                    <div class="weekly-day-name">木</div>
+                                    <div class="weekly-day-date">5</div>
+                                </div>
+                                <div class="weekly-day-header">
+                                    <div class="weekly-day-name">金</div>
+                                    <div class="weekly-day-date">6</div>
+                                </div>
+                                <div class="weekly-day-header">
+                                    <div class="weekly-day-name">土</div>
+                                    <div class="weekly-day-date">7</div>
+                                </div>
+                            
+                            <!-- 時間スロット（朝～夜） -->
+                            <div class="schedule-time">午前9時</div>
+                            <div class="schedule-cell" data-day="0" data-time="9"></div>
+                            <div class="schedule-cell" data-day="1" data-time="9"></div>
+                            <div class="schedule-cell" data-day="2" data-time="9"></div>
+                            <div class="schedule-cell" data-day="3" data-time="9"></div>
+                            <div class="schedule-cell" data-day="4" data-time="9"></div>
+                            <div class="schedule-cell" data-day="5" data-time="9"></div>
+                            <div class="schedule-cell" data-day="6" data-time="9"></div>
+                            
+                            <div class="schedule-time">午前10時</div>
+                            <div class="schedule-cell" data-day="0" data-time="10"></div>
+                            <div class="schedule-cell" data-day="1" data-time="10"></div>
+                            <div class="schedule-cell" data-day="2" data-time="10"></div>
+                            <div class="schedule-cell" data-day="3" data-time="10"></div>
+                            <div class="schedule-cell" data-day="4" data-time="10"></div>
+                            <div class="schedule-cell" data-day="5" data-time="10"></div>
+                            <div class="schedule-cell" data-day="6" data-time="10"></div>
+                            
+                            <div class="schedule-time">午前11時</div>
+                            <div class="schedule-cell" data-day="0" data-time="11"></div>
+                            <div class="schedule-cell" data-day="1" data-time="11"></div>
+                            <div class="schedule-cell" data-day="2" data-time="11"></div>
+                            <div class="schedule-cell" data-day="3" data-time="11"></div>
+                            <div class="schedule-cell" data-day="4" data-time="11"></div>
+                            <div class="schedule-cell" data-day="5" data-time="11"></div>
+                            <div class="schedule-cell" data-day="6" data-time="11"></div>
+                            
+                            <div class="schedule-time">午後12時</div>
+                            <div class="schedule-cell" data-day="0" data-time="12"></div>
+                            <div class="schedule-cell" data-day="1" data-time="12"></div>
+                            <div class="schedule-cell" data-day="2" data-time="12"></div>
+                            <div class="schedule-cell" data-day="3" data-time="12"></div>
+                            <div class="schedule-cell" data-day="4" data-time="12"></div>
+                            <div class="schedule-cell" data-day="5" data-time="12"></div>
+                            <div class="schedule-cell" data-day="6" data-time="12"></div>
+                            
+                            <div class="schedule-time">午後1時</div>
+                            <div class="schedule-cell" data-day="0" data-time="13"></div>
+                            <div class="schedule-cell" data-day="1" data-time="13"></div>
+                            <div class="schedule-cell" data-day="2" data-time="13"></div>
+                            <div class="schedule-cell" data-day="3" data-time="13"></div>
+                            <div class="schedule-cell" data-day="4" data-time="13"></div>
+                            <div class="schedule-cell" data-day="5" data-time="13"></div>
+                            <div class="schedule-cell" data-day="6" data-time="13"></div>
+                            
+                            <div class="schedule-time">午後2時</div>
+                            <div class="schedule-cell" data-day="0" data-time="14"></div>
+                            <div class="schedule-cell" data-day="1" data-time="14"></div>
+                            <div class="schedule-cell" data-day="2" data-time="14"></div>
+                            <div class="schedule-cell" data-day="3" data-time="14"></div>
+                            <div class="schedule-cell" data-day="4" data-time="14"></div>
+                            <div class="schedule-cell" data-day="5" data-time="14"></div>
+                            <div class="schedule-cell" data-day="6" data-time="14"></div>
+                            
+                            <div class="schedule-time">午後3時</div>
+                            <div class="schedule-cell" data-day="0" data-time="15"></div>
+                            <div class="schedule-cell" data-day="1" data-time="15"></div>
+                            <div class="schedule-cell" data-day="2" data-time="15"></div>
+                            <div class="schedule-cell" data-day="3" data-time="15"></div>
+                            <div class="schedule-cell" data-day="4" data-time="15"></div>
+                            <div class="schedule-cell" data-day="5" data-time="15"></div>
+                            <div class="schedule-cell" data-day="6" data-time="15"></div>
+                            
+                            <div class="schedule-time">午後4時</div>
+                            <div class="schedule-cell" data-day="0" data-time="16"></div>
+                            <div class="schedule-cell" data-day="1" data-time="16"></div>
+                            <div class="schedule-cell" data-day="2" data-time="16"></div>
+                            <div class="schedule-cell" data-day="3" data-time="16"></div>
+                            <div class="schedule-cell" data-day="4" data-time="16"></div>
+                            <div class="schedule-cell" data-day="5" data-time="16"></div>
+                            <div class="schedule-cell" data-day="6" data-time="16"></div>
+                            
+                            <div class="schedule-time">午後5時</div>
+                            <div class="schedule-cell" data-day="0" data-time="17"></div>
+                            <div class="schedule-cell" data-day="1" data-time="17"></div>
+                            <div class="schedule-cell" data-day="2" data-time="17"></div>
+                            <div class="schedule-cell" data-day="3" data-time="17"></div>
+                            <div class="schedule-cell" data-day="4" data-time="17"></div>
+                            <div class="schedule-cell" data-day="5" data-time="17"></div>
+                            <div class="schedule-cell" data-day="6" data-time="17"></div>
+                            
+                            <div class="schedule-time">午後6時</div>
+                            <div class="schedule-cell" data-day="0" data-time="18"></div>
+                            <div class="schedule-cell" data-day="1" data-time="18"></div>
+                            <div class="schedule-cell" data-day="2" data-time="18"></div>
+                            <div class="schedule-cell" data-day="3" data-time="18"></div>
+                            <div class="schedule-cell" data-day="4" data-time="18"></div>
+                            <div class="schedule-cell" data-day="5" data-time="18"></div>
+                            <div class="schedule-cell" data-day="6" data-time="18"></div>
+                            
+                            <div class="schedule-time">午後7時</div>
+                            <div class="schedule-cell" data-day="0" data-time="19"></div>
+                            <div class="schedule-cell selected" data-day="1" data-time="19"></div>
+                            <div class="schedule-cell" data-day="2" data-time="19"></div>
+                            <div class="schedule-cell selected" data-day="3" data-time="19"></div>
+                            <div class="schedule-cell" data-day="4" data-time="19"></div>
+                            <div class="schedule-cell selected" data-day="5" data-time="19"></div>
+                            <div class="schedule-cell" data-day="6" data-time="19"></div>
+                            
+                            <div class="schedule-time">午後8時</div>
+                            <div class="schedule-cell" data-day="0" data-time="20"></div>
+                            <div class="schedule-cell selected" data-day="1" data-time="20"></div>
+                            <div class="schedule-cell" data-day="2" data-time="20"></div>
+                            <div class="schedule-cell selected" data-day="3" data-time="20"></div>
+                            <div class="schedule-cell" data-day="4" data-time="20"></div>
+                            <div class="schedule-cell selected" data-day="5" data-time="20"></div>
+                            <div class="schedule-cell" data-day="6" data-time="20"></div>
+                            
+                            <div class="schedule-time">午後9時</div>
+                            <div class="schedule-cell" data-day="0" data-time="21"></div>
+                            <div class="schedule-cell" data-day="1" data-time="21"></div>
+                            <div class="schedule-cell" data-day="2" data-time="21"></div>
+                            <div class="schedule-cell" data-day="3" data-time="21"></div>
+                            <div class="schedule-cell" data-day="4" data-time="21"></div>
+                            <div class="schedule-cell" data-day="5" data-time="21"></div>
+                            <div class="schedule-cell" data-day="6" data-time="21"></div>
+                            
+                            <div class="schedule-time">午後10時</div>
+                            <div class="schedule-cell" data-day="0" data-time="22"></div>
+                            <div class="schedule-cell" data-day="1" data-time="22"></div>
+                            <div class="schedule-cell" data-day="2" data-time="22"></div>
+                            <div class="schedule-cell" data-day="3" data-time="22"></div>
+                            <div class="schedule-cell" data-day="4" data-time="22"></div>
+                            <div class="schedule-cell" data-day="5" data-time="22"></div>
+                            <div class="schedule-cell" data-day="6" data-time="22"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 選択された候補日の表示 -->
+                    <div class="selected-candidates">
+                        <h4 style="font-size: 14px; margin-bottom: 12px; color: #333;">選択中の候補日時</h4>
+                        <div id="candidate-chips">
+                            <div class="candidate-chip">
+                                1月12日（金）19:00-21:00
+                                <button class="remove-btn" data-candidate="2025-01-12-19-21">×</button>
+                            </div>
+                            <div class="candidate-chip">
+                                1月15日（月）19:00-21:00
+                                <button class="remove-btn" data-candidate="2025-01-15-19-21">×</button>
+                            </div>
+                            <div class="candidate-chip">
+                                1月19日（金）19:00-21:00
+                                <button class="remove-btn" data-candidate="2025-01-19-19-21">×</button>
+                            </div>
+                        </div>
+                        <div class="candidate-summary">
+                            計3つの候補日が選択されています
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>場所（任意）</label>
+                    <input type="text" placeholder="例：第1会議室、オンライン、居酒屋など">
+                </div>
+                
+                <div class="form-group">
+                    <label>回答期限</label>
+                    <input type="date" value="2024-12-30">
+                    <div class="helper-text">この日までに参加者からの回答を受け付けます</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>参加者</label>
+                    <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span class="material-icons" style="color: #4caf50;">check_circle</span>
+                            <span style="font-size: 14px; color: #666;">グループメンバー（5人）が自動で招待されます</span>
+                        </div>
+                        <div class="avatar-group">
+                            <div class="avatar" style="background-color: #1976d2; color: white;">山</div>
+                            <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                            <div class="avatar" style="background-color: #ff9800; color: white;">佐</div>
+                            <div class="avatar" style="background-color: #9c27b0; color: white;">鈴</div>
+                            <div class="avatar">高</div>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 12px; color: #666;">
+                            各メンバーにLINEで通知が送信され、個別に回答してもらいます
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>リマインダー設定</label>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: normal;">
+                            <input type="checkbox" checked>
+                            <span style="font-size: 14px;">未回答者への催促（24時間後）</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: normal;">
+                            <input type="checkbox" checked>
+                            <span style="font-size: 14px;">回答期限3日前の再催促</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: normal;">
+                            <input type="checkbox" checked>
+                            <span style="font-size: 14px;">日程確定時の全員通知</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="action-buttons" style="margin-top: 32px;">
+                    <button class="button outlined">キャンセル</button>
+                    <button class="button primary">
+                        <span class="material-icons">send</span>
+                        日程調整を作成・送信
+                    </button>
+                </div>
+                
+                <div style="background-color: #e3f2fd; padding: 12px; border-radius: 8px; margin-top: 16px;">
+                    <div style="font-size: 12px; color: #1976d2; text-align: center;">
+                        💡 作成後、参加者全員にLINEで日程調整の通知が送信されます
+                    </div>
                 </div>
             </div>
         </div>
@@ -952,5 +2299,545 @@
     <div class="fab">
         <span class="material-icons">add</span>
     </div>
+    
+    <script>
+        // 日程選択のインタラクション
+        document.addEventListener('DOMContentLoaded', function() {
+            // ◯×△選択機能
+            const responseOptions = document.querySelectorAll('.response-option');
+            responseOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const candidateItem = this.closest('.response-candidate-item');
+                    const siblings = this.parentElement.querySelectorAll('.response-option');
+                    const statusIndicator = candidateItem.querySelector('.response-status-indicator');
+                    
+                    // 同じ候補日の他の選択肢をリセット
+                    siblings.forEach(sibling => {
+                        sibling.classList.remove('ok', 'maybe', 'ng');
+                    });
+                    
+                    // 選択した選択肢をアクティブにする
+                    if (this.title === '参加できます') {
+                        this.classList.add('ok');
+                        statusIndicator.textContent = '選択済み: 参加できます';
+                    } else if (this.title === '調整可能') {
+                        this.classList.add('maybe');
+                        statusIndicator.textContent = '選択済み: 調整可能';
+                    } else if (this.title === '参加できません') {
+                        this.classList.add('ng');
+                        statusIndicator.textContent = '選択済み: 参加できません';
+                    }
+                });
+            });
+            
+            // 表示切り替え機能
+            const viewOptions = document.querySelectorAll('.view-option');
+            viewOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    viewOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // ここで実際の表示切り替えロジックを実装
+                    console.log('表示切り替え:', this.textContent);
+                });
+            });
+            
+            // カレンダー日付選択
+            const calendarDays = document.querySelectorAll('.calendar-day:not(.other-month)');
+            calendarDays.forEach(day => {
+                day.addEventListener('click', function() {
+                    calendarDays.forEach(d => d.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // 候補日選択
+            const candidateItems = document.querySelectorAll('.candidate-item');
+            candidateItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    candidateItems.forEach(i => i.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // === 新しい日程選択UI ===
+            
+            // モード切り替え
+            const modeTabs = document.querySelectorAll('.mode-tab');
+            const calendarMode = document.getElementById('calendar-mode');
+            const weeklyMode = document.getElementById('weekly-mode');
+            
+            modeTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    modeTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // モード切り替え
+                    calendarMode.style.display = 'none';
+                    weeklyMode.style.display = 'none';
+                    
+                    const mode = this.dataset.mode;
+                    if (mode === 'calendar') {
+                        calendarMode.style.display = 'block';
+                    } else if (mode === 'weekly') {
+                        weeklyMode.style.display = 'block';
+                    }
+                });
+            });
+            
+            // カレンダー選択（ドラッグ範囲選択対応）
+            const calendarDaysExtended = document.querySelectorAll('.calendar-day-extended:not(.disabled)');
+            const selectedDates = new Set();
+            let isDragging = false;
+            let dragStartDay = null;
+            let currentEndDay = null;
+            
+            calendarDaysExtended.forEach(day => {
+                // マウス/タッチ開始
+                const startDrag = (e) => {
+                    isDragging = true;
+                    dragStartDay = day;
+                    currentEndDay = day;
+                    
+                    // ドラッグ開始時に開始点をハイライト
+                    clearRangeHighlight();
+                    day.classList.add('range-start');
+                    
+                    // タッチイベントの場合、タッチ移動を追跡
+                    if (e.type === 'touchstart') {
+                        document.addEventListener('touchmove', handleTouchMove);
+                    }
+                };
+                
+                // マウス/タッチ終了
+                const endDrag = (e) => {
+                    if (isDragging && dragStartDay) {
+                        // 範囲選択を確定
+                        selectDateRange(dragStartDay, currentEndDay || dragStartDay);
+                        clearRangeHighlight();
+                    } else {
+                        // 通常のクリック処理（複数選択可能）
+                        const date = day.dataset.date;
+                        if (!date) return;
+                        
+                        if (day.classList.contains('selected')) {
+                            day.classList.remove('selected');
+                            selectedDates.delete(date);
+                        } else {
+                            day.classList.add('selected');
+                            selectedDates.add(date);
+                        }
+                        
+                        updateCandidateChips();
+                    }
+                    
+                    isDragging = false;
+                    dragStartDay = null;
+                    currentEndDay = null;
+                    
+                    // タッチイベントのリスナーを削除
+                    document.removeEventListener('touchmove', handleTouchMove);
+                };
+                
+                // マウスエンター（ドラッグ中のハイライト）
+                const handleMouseEnter = (e) => {
+                    if (isDragging && dragStartDay) {
+                        currentEndDay = day;
+                        highlightDateRange(dragStartDay, day);
+                    }
+                };
+                
+                // タッチ移動の処理
+                const handleTouchMove = (e) => {
+                    if (!isDragging || !dragStartDay) return;
+                    
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                    
+                    if (element && element.classList.contains('calendar-day-extended')) {
+                        const targetDay = element;
+                        if (currentEndDay !== targetDay) {
+                            currentEndDay = targetDay;
+                            highlightDateRange(dragStartDay, targetDay);
+                        }
+                    }
+                };
+                
+                // デスクトップ用イベント
+                day.addEventListener('mousedown', startDrag);
+                day.addEventListener('mouseup', endDrag);
+                day.addEventListener('mouseenter', handleMouseEnter);
+                
+                // モバイル用イベント
+                day.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    startDrag(e);
+                });
+                day.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    endDrag(e);
+                });
+            });
+            
+            // グローバルなマウスアップイベント（カレンダー外でマウスを離した場合）
+            document.addEventListener('mouseup', () => {
+                if (isDragging && dragStartDay && currentEndDay) {
+                    selectDateRange(dragStartDay, currentEndDay);
+                    clearRangeHighlight();
+                }
+                isDragging = false;
+                dragStartDay = null;
+                currentEndDay = null;
+            });
+            
+            // 範囲ハイライトをクリア
+            function clearRangeHighlight() {
+                calendarDaysExtended.forEach(day => {
+                    day.classList.remove('range-start', 'range-end', 'range-middle');
+                });
+            }
+            
+            // 日付範囲をハイライト
+            function highlightDateRange(startDay, endDay) {
+                clearRangeHighlight();
+                
+                const allDays = Array.from(calendarDaysExtended);
+                const startIndex = allDays.indexOf(startDay);
+                const endIndex = allDays.indexOf(endDay);
+                
+                if (startIndex === -1 || endIndex === -1) return;
+                
+                const minIndex = Math.min(startIndex, endIndex);
+                const maxIndex = Math.max(startIndex, endIndex);
+                
+                for (let i = minIndex; i <= maxIndex; i++) {
+                    const day = allDays[i];
+                    
+                    if (i === minIndex && i === maxIndex) {
+                        // 単一選択の場合
+                        day.classList.add('range-start');
+                    } else if (i === minIndex) {
+                        day.classList.add('range-start');
+                    } else if (i === maxIndex) {
+                        day.classList.add('range-end');
+                    } else {
+                        day.classList.add('range-middle');
+                    }
+                }
+            }
+            
+            // 日付範囲を選択（選択済みの場合は解除）
+            function selectDateRange(startDay, endDay) {
+                const allDays = Array.from(calendarDaysExtended);
+                const startIndex = allDays.indexOf(startDay);
+                const endIndex = allDays.indexOf(endDay);
+                
+                if (startIndex === -1 || endIndex === -1) return;
+                
+                const minIndex = Math.min(startIndex, endIndex);
+                const maxIndex = Math.max(startIndex, endIndex);
+                
+                // 範囲内の日付の選択状態を確認
+                let hasSelected = false;
+                for (let i = minIndex; i <= maxIndex; i++) {
+                    if (allDays[i].classList.contains('selected')) {
+                        hasSelected = true;
+                        break;
+                    }
+                }
+                
+                // 選択済みがある場合は解除、ない場合は選択
+                for (let i = minIndex; i <= maxIndex; i++) {
+                    const day = allDays[i];
+                    const date = day.dataset.date;
+                    if (date) {
+                        if (hasSelected) {
+                            // 解除
+                            day.classList.remove('selected');
+                            selectedDates.delete(date);
+                        } else {
+                            // 選択
+                            day.classList.add('selected');
+                            selectedDates.add(date);
+                        }
+                    }
+                }
+                
+                updateCandidateChips();
+            }
+            
+            // 時間パターン設定
+            const patternOptions = document.querySelectorAll('.pattern-option');
+            const sameTimeConfig = document.getElementById('same-time-config');
+            const weekdayTimeConfig = document.getElementById('weekday-time-config');
+            
+            patternOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    patternOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const pattern = this.dataset.pattern;
+                    if (pattern === 'same') {
+                        sameTimeConfig.style.display = 'block';
+                        weekdayTimeConfig.style.display = 'none';
+                    } else if (pattern === 'weekday') {
+                        sameTimeConfig.style.display = 'none';
+                        weekdayTimeConfig.style.display = 'block';
+                    }
+                });
+            });
+            
+            // 週間スケジュール選択（ドラッグ対応）
+            const scheduleCells = document.querySelectorAll('.schedule-cell');
+            let isScheduleDragging = false;
+            let scheduleDragStart = null;
+            let scheduleCurrentEnd = null;
+            
+            scheduleCells.forEach(cell => {
+                // マウス/タッチ開始
+                const startScheduleDrag = (e) => {
+                    if (cell.classList.contains('unavailable')) return;
+                    
+                    isScheduleDragging = true;
+                    scheduleDragStart = cell;
+                    scheduleCurrentEnd = cell;
+                    
+                    // ドラッグ開始時にハイライト
+                    clearScheduleRangeHighlight();
+                    cell.classList.add('range-start');
+                    
+                    // タッチイベントの場合、タッチ移動を追跡
+                    if (e.type === 'touchstart') {
+                        document.addEventListener('touchmove', handleScheduleTouchMove);
+                    }
+                };
+                
+                // マウス/タッチ終了
+                const endScheduleDrag = (e) => {
+                    if (isScheduleDragging && scheduleDragStart) {
+                        // 範囲選択を確定
+                        selectScheduleRange(scheduleDragStart, scheduleCurrentEnd || scheduleDragStart);
+                        clearScheduleRangeHighlight();
+                    } else if (!cell.classList.contains('unavailable')) {
+                        // 通常のクリック処理
+                        cell.classList.toggle('selected');
+                        updateWeeklySelection();
+                    }
+                    
+                    isScheduleDragging = false;
+                    scheduleDragStart = null;
+                    scheduleCurrentEnd = null;
+                    
+                    // タッチイベントのリスナーを削除
+                    document.removeEventListener('touchmove', handleScheduleTouchMove);
+                };
+                
+                // マウスエンター（ドラッグ中のハイライト）
+                const handleScheduleMouseEnter = (e) => {
+                    if (isScheduleDragging && scheduleDragStart && !cell.classList.contains('unavailable')) {
+                        scheduleCurrentEnd = cell;
+                        highlightScheduleRange(scheduleDragStart, cell);
+                    }
+                };
+                
+                // タッチ移動の処理
+                const handleScheduleTouchMove = (e) => {
+                    if (!isScheduleDragging || !scheduleDragStart) return;
+                    
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                    
+                    if (element && element.classList.contains('schedule-cell') && !element.classList.contains('unavailable')) {
+                        if (scheduleCurrentEnd !== element) {
+                            scheduleCurrentEnd = element;
+                            highlightScheduleRange(scheduleDragStart, element);
+                        }
+                    }
+                };
+                
+                // デスクトップ用イベント
+                cell.addEventListener('mousedown', startScheduleDrag);
+                cell.addEventListener('mouseup', endScheduleDrag);
+                cell.addEventListener('mouseenter', handleScheduleMouseEnter);
+                
+                // モバイル用イベント
+                cell.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    startScheduleDrag(e);
+                });
+                cell.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    endScheduleDrag(e);
+                });
+            });
+            
+            // グローバルなマウスアップイベント（週間スケジュール用）
+            document.addEventListener('mouseup', () => {
+                if (isScheduleDragging && scheduleDragStart && scheduleCurrentEnd) {
+                    selectScheduleRange(scheduleDragStart, scheduleCurrentEnd);
+                    clearScheduleRangeHighlight();
+                }
+                isScheduleDragging = false;
+                scheduleDragStart = null;
+                scheduleCurrentEnd = null;
+            });
+            
+            // 範囲ハイライトをクリア（週間スケジュール用）
+            function clearScheduleRangeHighlight() {
+                scheduleCells.forEach(cell => {
+                    cell.classList.remove('range-start', 'range-end', 'range-middle');
+                });
+            }
+            
+            // スケジュール範囲をハイライト
+            function highlightScheduleRange(startCell, endCell) {
+                clearScheduleRangeHighlight();
+                
+                const allCells = Array.from(scheduleCells);
+                const startIndex = allCells.indexOf(startCell);
+                const endIndex = allCells.indexOf(endCell);
+                
+                if (startIndex === -1 || endIndex === -1) return;
+                
+                const minIndex = Math.min(startIndex, endIndex);
+                const maxIndex = Math.max(startIndex, endIndex);
+                
+                for (let i = minIndex; i <= maxIndex; i++) {
+                    const cell = allCells[i];
+                    if (cell.classList.contains('unavailable')) continue;
+                    
+                    if (i === minIndex && i === maxIndex) {
+                        cell.classList.add('range-start');
+                    } else if (i === minIndex) {
+                        cell.classList.add('range-start');
+                    } else if (i === maxIndex) {
+                        cell.classList.add('range-end');
+                    } else {
+                        cell.classList.add('range-middle');
+                    }
+                }
+            }
+            
+            // スケジュール範囲を選択（選択済みの場合は解除）
+            function selectScheduleRange(startCell, endCell) {
+                const allCells = Array.from(scheduleCells);
+                const startIndex = allCells.indexOf(startCell);
+                const endIndex = allCells.indexOf(endCell);
+                
+                if (startIndex === -1 || endIndex === -1) return;
+                
+                const minIndex = Math.min(startIndex, endIndex);
+                const maxIndex = Math.max(startIndex, endIndex);
+                
+                // 範囲内のセルの選択状態を確認
+                let hasSelected = false;
+                for (let i = minIndex; i <= maxIndex; i++) {
+                    if (!allCells[i].classList.contains('unavailable') && allCells[i].classList.contains('selected')) {
+                        hasSelected = true;
+                        break;
+                    }
+                }
+                
+                // 選択済みがある場合は解除、ない場合は選択
+                for (let i = minIndex; i <= maxIndex; i++) {
+                    const cell = allCells[i];
+                    if (!cell.classList.contains('unavailable')) {
+                        if (hasSelected) {
+                            cell.classList.remove('selected');
+                        } else {
+                            cell.classList.add('selected');
+                        }
+                    }
+                }
+                
+                updateWeeklySelection();
+            }
+            
+            // 候補日チップの削除
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-btn')) {
+                    const chip = e.target.closest('.candidate-chip');
+                    if (chip) {
+                        chip.remove();
+                        updateCandidateSummary();
+                    }
+                }
+            });
+            
+            // 候補日チップ更新関数
+            function updateCandidateChips() {
+                const chipsContainer = document.getElementById('candidate-chips');
+                const startTime = document.querySelector('#same-time-config input[type="time"]').value;
+                const endTime = document.querySelector('#same-time-config input[type="time"]:last-of-type').value;
+                
+                chipsContainer.innerHTML = '';
+                selectedDates.forEach(date => {
+                    const dateObj = new Date(date);
+                    const monthDay = `${dateObj.getMonth() + 1}月${dateObj.getDate()}日`;
+                    const weekday = ['日', '月', '火', '水', '木', '金', '土'][dateObj.getDay()];
+                    
+                    const chip = document.createElement('div');
+                    chip.className = 'candidate-chip';
+                    chip.innerHTML = `
+                        ${monthDay}（${weekday}）${startTime}-${endTime}
+                        <button class="remove-btn" data-candidate="${date}">×</button>
+                    `;
+                    chipsContainer.appendChild(chip);
+                });
+                
+                updateCandidateSummary();
+            }
+            
+            // 週間選択の更新
+            function updateWeeklySelection() {
+                const selectedCells = document.querySelectorAll('.schedule-cell.selected');
+                const chipsContainer = document.getElementById('candidate-chips');
+                
+                chipsContainer.innerHTML = '';
+                selectedCells.forEach(cell => {
+                    const day = cell.dataset.day;
+                    const time = cell.dataset.time;
+                    const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+                    const dayName = dayNames[day];
+                    
+                    const chip = document.createElement('div');
+                    chip.className = 'candidate-chip';
+                    chip.innerHTML = `
+                        ${dayName}曜日 ${time}:00-${parseInt(time) + 1}:00
+                        <button class="remove-btn">×</button>
+                    `;
+                    chipsContainer.appendChild(chip);
+                });
+                
+                updateCandidateSummary();
+            }
+            
+            // 候補日サマリー更新
+            function updateCandidateSummary() {
+                const chips = document.querySelectorAll('.candidate-chip');
+                const summary = document.querySelector('.candidate-summary');
+                summary.textContent = `計${chips.length}つの候補日が選択されています`;
+            }
+            
+            // 月切り替え
+            const prevMonthBtn = document.getElementById('prev-month');
+            const nextMonthBtn = document.getElementById('next-month');
+            const currentMonthElement = document.getElementById('current-month');
+            
+            if (prevMonthBtn && nextMonthBtn) {
+                prevMonthBtn.addEventListener('click', function() {
+                    console.log('前月に移動');
+                    // 実際の月切り替えロジックをここに実装
+                });
+                
+                nextMonthBtn.addEventListener('click', function() {
+                    console.log('次月に移動');
+                    // 実際の月切り替えロジックをここに実装
+                });
+            }
+        });
+    </script>
 </body>
 </html>

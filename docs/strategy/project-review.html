@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI秘書TASK - プロジェクト戦略レビュー</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* ヘッダー */
+        .header {
+            background-color: #1976d2;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 8px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        /* セクション */
+        .section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .section-header h2 {
+            font-size: 24px;
+            color: #1976d2;
+        }
+        
+        /* 質問と回答 */
+        .qa-item {
+            margin-bottom: 32px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .question {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #1976d2;
+            display: flex;
+            align-items: start;
+            gap: 8px;
+        }
+        
+        .question::before {
+            content: "Q.";
+            font-weight: 700;
+            min-width: 24px;
+        }
+        
+        .answer-box {
+            background-color: white;
+            padding: 16px;
+            border-radius: 4px;
+            margin-top: 12px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .answer-placeholder {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .answer {
+            white-space: pre-wrap;
+            color: #333;
+        }
+        
+        /* ユースケース */
+        .usecase {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .usecase-header {
+            font-weight: 500;
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #1565c0;
+        }
+        
+        .usecase-scenario {
+            margin-bottom: 16px;
+        }
+        
+        .usecase-label {
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        /* 優先度バッジ */
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .priority.high {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .priority.medium {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .priority.low {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        /* チェックリスト */
+        .checklist {
+            list-style: none;
+            margin: 16px 0;
+        }
+        
+        .checklist li {
+            padding: 8px 0 8px 28px;
+            position: relative;
+        }
+        
+        .checklist li::before {
+            content: "□";
+            position: absolute;
+            left: 0;
+            color: #999;
+        }
+        
+        .checklist li.checked::before {
+            content: "✓";
+            color: #4caf50;
+        }
+        
+        /* タブ */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .tab:hover {
+            color: #1976d2;
+        }
+        
+        .tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* ノート */
+        .note {
+            background-color: #fffbf0;
+            border-left: 4px solid #ff9800;
+            padding: 16px;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        
+        /* アクションアイテム */
+        .action-items {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 24px;
+        }
+        
+        .action-items h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #d32f2f;
+        }
+        
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI秘書TASK プロジェクト戦略レビュー</h1>
+            <p>各機能の詳細な検討と方向性の明確化</p>
+        </div>
+        
+        <!-- プロジェクト全体の見直し -->
+        <div class="section">
+            <div class="section-header">
+                <span class="material-icons">assessment</span>
+                <h2>プロジェクト全体の見直し</h2>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    このプロジェクトが解決しようとしている本質的な課題は何か？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">
+                        ［回答をここに記入］
+                        例：LINEグループでの活動において発生する様々な調整作業（日程調整、費用精算など）の煩雑さ
+                    </div>
+                </div>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    ターゲットユーザーは誰か？具体的なペルソナは？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">
+                        ［回答をここに記入］
+                        例：20-40代の社会人グループ、大学生サークル、家族グループなど
+                    </div>
+                </div>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    既存の類似サービスとの差別化ポイントは？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">
+                        ［回答をここに記入］
+                        例：LINEネイティブ、グループメンバー自動認識、AIによる最適化提案など
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 機能別レビュー：日程調整 -->
+        <div class="section">
+            <div class="section-header">
+                <span class="material-icons">event</span>
+                <h2>日程調整機能</h2>
+                <span class="priority high">優先度：高</span>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" data-tab="schedule-overview">概要</button>
+                <button class="tab" data-tab="schedule-usecase">ユースケース</button>
+                <button class="tab" data-tab="schedule-issues">課題と改善</button>
+            </div>
+            
+            <div class="tab-content active" id="schedule-overview">
+                <div class="qa-item">
+                    <div class="question">
+                        日程調整機能の最も重要な価値は何か？
+                    </div>
+                    <div class="answer-box">
+                        <div class="answer-placeholder">
+                            ［回答をここに記入］
+                            例：複数人の都合を効率的に集約し、最適な日時を自動で提案すること
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="qa-item">
+                    <div class="question">
+                        現在の実装で不足している機能は？
+                    </div>
+                    <div class="answer-box">
+                        <div class="answer-placeholder">
+                            ［回答をここに記入］
+                            例：カレンダー連携、繰り返し予定の設定、場所の候補管理など
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="qa-item">
+                    <div class="question">
+                        UIの改善点は？特にモバイルでの使いやすさについて
+                    </div>
+                    <div class="answer-box">
+                        <div class="answer-placeholder">
+                            ［回答をここに記入］
+                            例：ドラッグ選択の操作性、時間帯選択の直感性など
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="schedule-usecase">
+                <div class="usecase">
+                    <div class="usecase-header">ユースケース1：飲み会の日程調整</div>
+                    <div class="usecase-scenario">
+                        <div class="usecase-label">シナリオ：</div>
+                        <p>開発チーム5人で忘年会の日程を決めたい。平日の19時以降が希望。</p>
+                    </div>
+                    <div class="qa-item">
+                        <div class="question">
+                            このケースで必要な機能は？
+                        </div>
+                        <div class="answer-box">
+                            <div class="answer-placeholder">［回答をここに記入］</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="usecase">
+                    <div class="usecase-header">ユースケース2：定例会議の調整</div>
+                    <div class="usecase-scenario">
+                        <div class="usecase-label">シナリオ：</div>
+                        <p>毎週の定例会議の時間を変更したい。全員が参加必須。</p>
+                    </div>
+                    <div class="qa-item">
+                        <div class="question">
+                            このケースで必要な機能は？
+                        </div>
+                        <div class="answer-box">
+                            <div class="answer-placeholder">［回答をここに記入］</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="schedule-issues">
+                <h3>現在の課題</h3>
+                <ul class="checklist">
+                    <li>回答率が低い場合の対応</li>
+                    <li>急な予定変更への対応</li>
+                    <li>時間帯の細かい調整（30分単位など）</li>
+                    <li>オンライン/オフラインの選択</li>
+                </ul>
+                
+                <div class="qa-item">
+                    <div class="question">
+                        最優先で解決すべき課題は？
+                    </div>
+                    <div class="answer-box">
+                        <div class="answer-placeholder">［回答をここに記入］</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 機能別レビュー：割り勘 -->
+        <div class="section">
+            <div class="section-header">
+                <span class="material-icons">account_balance_wallet</span>
+                <h2>割り勘機能</h2>
+                <span class="priority high">優先度：高</span>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" data-tab="warikan-overview">概要</button>
+                <button class="tab" data-tab="warikan-usecase">ユースケース</button>
+                <button class="tab" data-tab="warikan-issues">課題と改善</button>
+            </div>
+            
+            <div class="tab-content active" id="warikan-overview">
+                <div class="qa-item">
+                    <div class="question">
+                        割り勘機能の独自性は何か？調整さんPayなどとの違いは？
+                    </div>
+                    <div class="answer-box">
+                        <div class="answer-placeholder">
+                            ［回答をここに記入］
+                            例：LINEネイティブ、グループメンバー自動認識、Walica式最適化など
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="qa-item">
+                    <div class="question">
+                        支払い方法の連携についてどう考えるか？（PayPay、LINE Payなど）
+                    </div>
+                    <div class="answer-box">
+                        <div class="answer-placeholder">［回答をここに記入］</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="warikan-usecase">
+                <div class="usecase">
+                    <div class="usecase-header">ユースケース1：複数店舗での精算</div>
+                    <div class="usecase-scenario">
+                        <div class="usecase-label">シナリオ：</div>
+                        <p>1次会（居酒屋）、2次会（カラオケ）、タクシー代を別々の人が支払った</p>
+                    </div>
+                    <div class="qa-item">
+                        <div class="question">
+                            このケースでの理想的な処理フローは？
+                        </div>
+                        <div class="answer-box">
+                            <div class="answer-placeholder">［回答をここに記入］</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="usecase">
+                    <div class="usecase-header">ユースケース2：旅行の精算</div>
+                    <div class="usecase-scenario">
+                        <div class="usecase-label">シナリオ：</div>
+                        <p>3泊4日の旅行で、宿泊費、交通費、食事代などが発生</p>
+                    </div>
+                    <div class="qa-item">
+                        <div class="question">
+                            長期間・多項目の精算での課題は？
+                        </div>
+                        <div class="answer-box">
+                            <div class="answer-placeholder">［回答をここに記入］</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="warikan-issues">
+                <h3>技術的課題</h3>
+                <ul class="checklist">
+                    <li>領収書OCRの精度向上</li>
+                    <li>支払い確認の自動化</li>
+                    <li>外貨対応</li>
+                    <li>税金計算の考慮</li>
+                </ul>
+                
+                <div class="note">
+                    <strong>注意：</strong>金銭を扱う機能のため、計算の正確性と透明性が最重要
+                </div>
+            </div>
+        </div>
+        
+        <!-- 技術面の見直し -->
+        <div class="section">
+            <div class="section-header">
+                <span class="material-icons">engineering</span>
+                <h2>技術アーキテクチャの見直し</h2>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    現在の技術スタックの妥当性は？変更すべき部分はあるか？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">
+                        ［回答をここに記入］
+                        現在：Python (FastAPI) + PostgreSQL + LINE Messaging API
+                    </div>
+                </div>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    スケーラビリティの課題は？1000グループ、10000グループでの動作は？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">［回答をここに記入］</div>
+                </div>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    セキュリティ面で考慮すべき点は？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">
+                        ［回答をここに記入］
+                        例：個人情報保護、支払い情報の扱い、グループ間のデータ分離など
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ビジネスモデル -->
+        <div class="section">
+            <div class="section-header">
+                <span class="material-icons">monetization_on</span>
+                <h2>ビジネスモデルと収益化</h2>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    無料版と有料版の機能差はどうするか？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">
+                        ［回答をここに記入］
+                        例：無料版は月5回まで、有料版は無制限など
+                    </div>
+                </div>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    B2B展開の可能性は？企業向けカスタマイズは？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">［回答をここに記入］</div>
+                </div>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    初期のターゲット市場は？どこから始めるか？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">［回答をここに記入］</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 今後の拡張性 -->
+        <div class="section">
+            <div class="section-header">
+                <span class="material-icons">trending_up</span>
+                <h2>今後の拡張方向</h2>
+            </div>
+            
+            <h3>検討中の追加機能</h3>
+            <ul class="checklist">
+                <li>学習管理機能</li>
+                <li>タスク管理機能</li>
+                <li>買い物リスト共有</li>
+                <li>アンケート/投票機能</li>
+                <li>議事録自動生成</li>
+                <li>他のメッセージングアプリ対応（Slack、Discord）</li>
+            </ul>
+            
+            <div class="qa-item">
+                <div class="question">
+                    次に実装すべき機能の優先順位は？その理由は？
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">［回答をここに記入］</div>
+                </div>
+            </div>
+            
+            <div class="qa-item">
+                <div class="question">
+                    AI機能の強化についてどう考えるか？（自然言語理解、予測提案など）
+                </div>
+                <div class="answer-box">
+                    <div class="answer-placeholder">［回答をここに記入］</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- アクションアイテム -->
+        <div class="section">
+            <div class="section-header">
+                <span class="material-icons">task_alt</span>
+                <h2>アクションアイテム</h2>
+            </div>
+            
+            <div class="action-items">
+                <h3>短期（1ヶ月以内）</h3>
+                <ul class="checklist">
+                    <li>［ここにアクションアイテムを記入］</li>
+                    <li>［ここにアクションアイテムを記入］</li>
+                    <li>［ここにアクションアイテムを記入］</li>
+                </ul>
+            </div>
+            
+            <div class="action-items">
+                <h3>中期（3ヶ月以内）</h3>
+                <ul class="checklist">
+                    <li>［ここにアクションアイテムを記入］</li>
+                    <li>［ここにアクションアイテムを記入］</li>
+                    <li>［ここにアクションアイテムを記入］</li>
+                </ul>
+            </div>
+            
+            <div class="action-items">
+                <h3>長期（6ヶ月以降）</h3>
+                <ul class="checklist">
+                    <li>［ここにアクションアイテムを記入］</li>
+                    <li>［ここにアクションアイテムを記入］</li>
+                    <li>［ここにアクションアイテムを記入］</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // タブ切り替え
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabGroup = this.parentElement;
+                    const contentContainer = tabGroup.parentElement;
+                    const targetId = this.dataset.tab;
+                    
+                    // タブのアクティブ状態を更新
+                    tabGroup.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // コンテンツの表示を切り替え
+                    contentContainer.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    const targetContent = document.getElementById(targetId);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+            
+            // 回答ボックスをクリックで編集可能に
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    if (this.querySelector('.answer-placeholder')) {
+                        const placeholder = this.querySelector('.answer-placeholder');
+                        const text = placeholder.textContent.replace('［回答をここに記入］', '').trim();
+                        
+                        const textarea = document.createElement('textarea');
+                        textarea.className = 'answer';
+                        textarea.style.width = '100%';
+                        textarea.style.minHeight = '100px';
+                        textarea.style.border = 'none';
+                        textarea.style.outline = 'none';
+                        textarea.style.resize = 'vertical';
+                        textarea.value = text.startsWith('例：') ? '' : text;
+                        
+                        this.innerHTML = '';
+                        this.appendChild(textarea);
+                        textarea.focus();
+                        
+                        textarea.addEventListener('blur', function() {
+                            const content = this.value.trim();
+                            if (content) {
+                                const answerDiv = document.createElement('div');
+                                answerDiv.className = 'answer';
+                                answerDiv.textContent = content;
+                                this.parentElement.innerHTML = '';
+                                this.parentElement.appendChild(answerDiv);
+                            } else {
+                                const placeholderDiv = document.createElement('div');
+                                placeholderDiv.className = 'answer-placeholder';
+                                placeholderDiv.textContent = '［回答をここに記入］';
+                                this.parentElement.innerHTML = '';
+                                this.parentElement.appendChild(placeholderDiv);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

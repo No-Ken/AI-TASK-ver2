@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI秘書TASK - プロジェクトドキュメント</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* サイドバー */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 24px;
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .sidebar-header h1 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .nav-section {
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .nav-section-title {
+            padding: 8px 24px;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .nav-item {
+            display: block;
+            padding: 12px 24px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .nav-item.active {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+            padding-left: 20px;
+        }
+        
+        /* メインコンテンツ */
+        .main-content {
+            margin-left: 280px;
+            padding: 32px;
+            max-width: 1200px;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-size: 28px;
+            margin-bottom: 16px;
+            color: #1976d2;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        h3 {
+            font-size: 20px;
+            margin: 24px 0 16px 0;
+            color: #333;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+        
+        h4 {
+            font-size: 16px;
+            margin: 16px 0 12px 0;
+            color: #666;
+        }
+        
+        p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+        
+        /* 機能カード */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+        
+        .feature-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .feature-card h4 {
+            color: #1976d2;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feature-card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            font-size: 14px;
+        }
+        
+        .feature-list li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+        }
+        
+        /* コードブロック */
+        .code-block {
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            padding: 16px;
+            margin: 16px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .code-inline {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+        }
+        
+        /* テーブル */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: #f5f5f5;
+            font-weight: 500;
+        }
+        
+        /* アラート */
+        .alert {
+            padding: 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+        
+        .alert-info {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .alert-warning {
+            background-color: #fff8e1;
+            color: #f57f17;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        /* デモリンク */
+        .demo-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .demo-link {
+            background-color: #1976d2;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .demo-link:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* スクリーンショット */
+        .screenshot {
+            margin: 16px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .screenshot img {
+            width: 100%;
+            display: block;
+        }
+        
+        .screenshot-caption {
+            background-color: #f5f5f5;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- サイドバー -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h1>AI秘書TASK</h1>
+            <p>プロジェクトドキュメント</p>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">概要</div>
+            <a href="#overview" class="nav-item active">プロジェクト概要</a>
+            <a href="#features" class="nav-item">主要機能</a>
+            <a href="#architecture" class="nav-item">アーキテクチャ</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">機能詳細</div>
+            <a href="#schedule" class="nav-item">日程調整</a>
+            <a href="#warikan" class="nav-item">割り勘</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">技術仕様</div>
+            <a href="#api" class="nav-item">API仕様</a>
+            <a href="#database" class="nav-item">データベース設計</a>
+            <a href="#integration" class="nav-item">LINE連携</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">その他</div>
+            <a href="#demo" class="nav-item">デモページ</a>
+            <a href="#roadmap" class="nav-item">今後の開発計画</a>
+        </div>
+    </nav>
+    
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <!-- プロジェクト概要 -->
+        <section id="overview" class="section">
+            <h2><span class="material-icons">info</span> プロジェクト概要</h2>
+            
+            <p>
+                AI秘書TASKは、LINEボットとして動作する多機能なAIアシスタントです。
+                日常的なタスクを効率化し、グループでの活動をスムーズにサポートします。
+            </p>
+            
+            <div class="alert alert-info">
+                <span class="material-icons">lightbulb</span>
+                <div>
+                    <strong>コンセプト：</strong>
+                    LINEボットとして動作し、日常的なタスクを効率化。
+                    グループでの活動をスムーズにサポートします。
+                </div>
+            </div>
+            
+            <h3>プロジェクトの特徴</h3>
+            <ul class="feature-list">
+                <li>LINEグループでの共同作業を効率化</li>
+                <li>直感的なLIFFアプリによる詳細設定</li>
+                <li>グループメンバーの自動認識と管理</li>
+                <li>リアルタイムな通知とリマインダー</li>
+            </ul>
+        </section>
+        
+        <!-- 主要機能 -->
+        <section id="features" class="section">
+            <h2><span class="material-icons">apps</span> 主要機能</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><span class="material-icons">event</span> 日程調整</h4>
+                    <p>グループメンバーとの日程調整を簡単に。複数の候補日から最適な日時を自動で提案します。</p>
+                    <ul class="feature-list">
+                        <li>複数候補日の一括管理</li>
+                        <li>◯△✕での簡単回答</li>
+                        <li>自動集計と最適日程の提案</li>
+                        <li>リマインダー機能</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><span class="material-icons">account_balance_wallet</span> 割り勘計算</h4>
+                    <p>複雑な割り勘も瞬時に計算。支払い履歴の管理と精算状況の可視化を実現。</p>
+                    <ul class="feature-list">
+                        <li>領収書OCR読み取り</li>
+                        <li>参加者別の支払い管理</li>
+                        <li>Walica式最適化計算</li>
+                        <li>支払いリマインダー</li>
+                    </ul>
+                </div>
+                
+                
+            </div>
+        </section>
+        
+        <!-- アーキテクチャ -->
+        <section id="architecture" class="section">
+            <h2><span class="material-icons">architecture</span> システムアーキテクチャ</h2>
+            
+            <h3>技術スタック</h3>
+            <table>
+                <tr>
+                    <th>カテゴリ</th>
+                    <th>技術</th>
+                    <th>用途</th>
+                </tr>
+                <tr>
+                    <td>フロントエンド</td>
+                    <td>HTML5, CSS3, JavaScript</td>
+                    <td>LIFF アプリケーション</td>
+                </tr>
+                <tr>
+                    <td>バックエンド</td>
+                    <td>Python (FastAPI)</td>
+                    <td>APIサーバー</td>
+                </tr>
+                <tr>
+                    <td>データベース</td>
+                    <td>PostgreSQL</td>
+                    <td>データ永続化</td>
+                </tr>
+                <tr>
+                    <td>メッセージング</td>
+                    <td>LINE Messaging API</td>
+                    <td>ボット通信</td>
+                </tr>
+                <tr>
+                    <td>AI/ML</td>
+                    <td>OpenAI GPT-4</td>
+                    <td>自然言語処理</td>
+                </tr>
+            </table>
+            
+            <h3>システム構成図</h3>
+            <div class="code-block">
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   LINE App  │────▶│ LINE Server │────▶│  Webhook    │
+└─────────────┘     └─────────────┘     └─────────────┘
+                                                │
+                                                ▼
+                                        ┌─────────────┐
+                                        │  AI秘書API  │
+                                        └─────────────┘
+                                                │
+                            ┌───────────────────┼───────────────────┐
+                            ▼                   ▼                   ▼
+                    ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+                    │  Database   │     │  OpenAI API │     │  LIFF App   │
+                    └─────────────┘     └─────────────┘     └─────────────┘
+            </div>
+        </section>
+        
+        <!-- 日程調整機能 -->
+        <section id="schedule" class="section">
+            <h2><span class="material-icons">event</span> 日程調整機能</h2>
+            
+            <h3>機能概要</h3>
+            <p>
+                グループメンバー間での日程調整を効率化する機能です。
+                複数の候補日時を提示し、各メンバーの都合を集約して最適な日時を決定します。
+            </p>
+            
+            <h3>使い方</h3>
+            <div class="code-block">
+@AI秘書 TASK 日程調整
+            </div>
+            
+            <h3>実装された機能</h3>
+            <h4>1. 候補日選択UI</h4>
+            <ul class="feature-list">
+                <li>カレンダー表示モード：月単位での日付選択</li>
+                <li>週間表示モード：Googleカレンダー風の時間帯選択</li>
+                <li>ドラッグ＆ドロップによる範囲選択</li>
+                <li>時間パターン設定（一定時間/曜日別）</li>
+            </ul>
+            
+            <h4>2. 参加者管理</h4>
+            <ul class="feature-list">
+                <li>LINEグループメンバーの自動検出</li>
+                <li>回答状況のリアルタイム追跡</li>
+                <li>未回答者へのリマインダー送信</li>
+            </ul>
+            
+            <h4>3. 回答インターフェース</h4>
+            <ul class="feature-list">
+                <li>◯（参加可能）△（調整可能）✕（参加不可）の3段階評価</li>
+                <li>コメント追加機能</li>
+                <li>回答の修正・更新</li>
+            </ul>
+            
+            <div class="alert alert-success">
+                <span class="material-icons">check_circle</span>
+                <div>
+                    <strong>最新アップデート：</strong>
+                    ドラッグによる範囲選択機能を追加。選択済みの範囲を再度ドラッグすることで選択解除も可能に。
+                </div>
+            </div>
+        </section>
+        
+        <!-- 割り勘機能 -->
+        <section id="warikan" class="section">
+            <h2><span class="material-icons">account_balance_wallet</span> 割り勘機能</h2>
+            
+            <h3>機能概要</h3>
+            <p>
+                グループでの支払いを管理し、最適な精算方法を提案する機能です。
+                複数回の支払いをまとめて精算し、送金回数を最小化します。
+            </p>
+            
+            <h3>使い方</h3>
+            <div class="code-block">
+@AI秘書 TASK 割り勘
+            </div>
+            
+            <p>または、お金の絵文字スタンプ（💰）を送信</p>
+            
+            <h3>特徴的な機能</h3>
+            <h4>1. 領収書OCR機能</h4>
+            <ul class="feature-list">
+                <li>領収書画像から金額を自動読み取り</li>
+                <li>店名・日付の自動抽出</li>
+                <li>読み取り結果の確認・修正</li>
+            </ul>
+            
+            <h4>2. Walica式最適化</h4>
+            <p>
+                複数の貸し借りを整理し、最小の送金回数で精算を完了させるアルゴリズムを実装。
+            </p>
+            <div class="code-block">
+例：
+A→B: 3,000円
+B→C: 2,000円
+C→A: 1,000円
+
+通常：3回の送金
+最適化後：A→B: 1,000円（1回で完了）
+            </div>
+            
+            <h4>3. 支払い管理</h4>
+            <ul class="feature-list">
+                <li>プロジェクト単位での管理</li>
+                <li>支払い履歴の保存</li>
+                <li>未払い者へのリマインダー</li>
+                <li>支払い完了の自動記録</li>
+            </ul>
+        </section>
+        
+        <!-- API仕様 -->
+        <section id="api" class="section">
+            <h2><span class="material-icons">api</span> API仕様</h2>
+            
+            <h3>エンドポイント一覧</h3>
+            <table>
+                <tr>
+                    <th>メソッド</th>
+                    <th>パス</th>
+                    <th>説明</th>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/webhook</td>
+                    <td>LINE Webhookエンドポイント</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/schedule/list</td>
+                    <td>日程調整一覧取得</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/schedule/create</td>
+                    <td>日程調整作成</td>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/schedule/answer</td>
+                    <td>日程調整回答</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/warikan/list</td>
+                    <td>割り勘プロジェクト一覧</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/warikan/create</td>
+                    <td>割り勘プロジェクト作成</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/warikan/payment</td>
+                    <td>支払い登録</td>
+                </tr>
+            </table>
+            
+            <h3>認証</h3>
+            <p>
+                LINE IDトークンを使用したJWT認証を実装。
+                各APIリクエストには <code class="code-inline">Authorization: Bearer {token}</code> ヘッダーが必要。
+            </p>
+        </section>
+        
+        <!-- データベース設計 -->
+        <section id="database" class="section">
+            <h2><span class="material-icons">storage</span> データベース設計</h2>
+            
+            <h3>主要テーブル</h3>
+            
+            <h4>users テーブル</h4>
+            <div class="code-block">
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    line_id VARCHAR(255) UNIQUE NOT NULL,
+    display_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+            </div>
+            
+            <h4>groups テーブル</h4>
+            <div class="code-block">
+CREATE TABLE groups (
+    id SERIAL PRIMARY KEY,
+    line_group_id VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+            </div>
+            
+            <h4>schedules テーブル</h4>
+            <div class="code-block">
+CREATE TABLE schedules (
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER REFERENCES groups(id),
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_by INTEGER REFERENCES users(id),
+    deadline DATE,
+    status VARCHAR(50) DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+            </div>
+        </section>
+        
+        <!-- LINE連携 -->
+        <section id="integration" class="section">
+            <h2><span class="material-icons">link</span> LINE連携</h2>
+            
+            <h3>LINE Messaging API</h3>
+            <p>
+                Webhookを通じてメッセージを受信し、適切な応答を返します。
+                リッチメニューやクイックリプライを活用した直感的なUIを提供。
+            </p>
+            
+            <h3>LIFF（LINE Front-end Framework）</h3>
+            <p>
+                詳細な設定や複雑な操作はLIFFアプリで実現。
+                LINEアプリ内でシームレスに動作するWebアプリケーションとして実装。
+            </p>
+            
+            <div class="code-block">
+// LIFF初期化例
+liff.init({
+    liffId: "YOUR-LIFF-ID"
+}).then(() => {
+    if (liff.isInClient()) {
+        // LINEアプリ内での処理
+        const profile = liff.getProfile();
+        const groupId = liff.getContext().groupId;
+    }
+});
+            </div>
+        </section>
+        
+        <!-- デモページ -->
+        <section id="demo" class="section">
+            <h2><span class="material-icons">preview</span> デモページ</h2>
+            
+            <p>
+                各機能の動作を確認できるデモページを用意しています。
+                実際のLIFFアプリと同じUIで機能を体験できます。
+            </p>
+            
+            <div class="demo-links">
+                <a href="index.html" class="demo-link">
+                    <span class="material-icons">home</span>
+                    デモ一覧
+                </a>
+                <a href="schedule.html" class="demo-link">
+                    <span class="material-icons">event</span>
+                    日程調整デモ
+                </a>
+                <a href="warikan.html" class="demo-link">
+                    <span class="material-icons">account_balance_wallet</span>
+                    割り勘デモ
+                </a>
+            </div>
+        </section>
+        
+        <!-- 今後の開発計画 -->
+        <section id="roadmap" class="section">
+            <h2><span class="material-icons">timeline</span> 今後の開発計画</h2>
+            
+            <h3>短期目標（1-2ヶ月）</h3>
+            <ul class="feature-list">
+                <li>通知機能の最適化</li>
+                <li>エラーハンドリングの改善</li>
+                <li>パフォーマンスの向上</li>
+                <li>UIの使いやすさ改善</li>
+            </ul>
+            
+            <h3>中期目標（3-6ヶ月）</h3>
+            <ul class="feature-list">
+                <li>タスク管理機能の追加</li>
+                <li>カレンダー連携（Googleカレンダー等）</li>
+                <li>音声入力対応</li>
+                <li>多言語対応</li>
+                <li>学習管理機能の実装</li>
+            </ul>
+            
+            <h3>長期目標（6ヶ月以降）</h3>
+            <ul class="feature-list">
+                <li>AI応答の更なる高度化</li>
+                <li>他のメッセージングアプリ対応</li>
+                <li>企業向けカスタマイズ版の開発</li>
+                <li>APIの外部公開</li>
+            </ul>
+        </section>
+        
+        <!-- フッター -->
+        <div style="text-align: center; padding: 40px 0; color: #666;">
+            <p>AI秘書TASK - プロジェクトドキュメント</p>
+            <p>最終更新日: 2024年12月</p>
+        </div>
+    </main>
+    
+    <script>
+        // ナビゲーションのアクティブ状態管理
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section');
+            
+            // スムーズスクロール
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                        
+                        // アクティブ状態の更新
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+            
+            // スクロール時のアクティブ状態更新
+            window.addEventListener('scroll', function() {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (scrollY >= sectionTop - 200) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href').substring(1) === current) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

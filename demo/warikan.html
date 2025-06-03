@@ -470,6 +470,103 @@
             margin-top: 4px;
         }
         
+        /* メンバー管理 */
+        .member-management {
+            margin-top: 8px;
+        }
+        
+        .member-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .member-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .member-item.selected {
+            border-color: #1976d2;
+            background-color: #e3f2fd;
+        }
+        
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            margin-right: 12px;
+        }
+        
+        .member-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .member-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .member-badge {
+            font-size: 11px;
+            color: #666;
+            background-color: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            width: fit-content;
+        }
+        
+        .member-item.selected .member-badge {
+            background-color: rgba(25,118,210,0.2);
+            color: #1976d2;
+        }
+        
+        .add-member-form {
+            display: flex;
+            align-items: center;
+        }
+        
+        .member-name-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .remove-button {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .remove-button:hover {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .remove-button .material-icons {
+            font-size: 18px;
+        }
+        
         /* 領収書アップロード */
         .receipt-upload {
             border: 2px dashed #e0e0e0;
@@ -499,6 +596,51 @@
         .receipt-upload .button {
             width: auto;
             padding: 8px 16px;
+        }
+        
+        /* プログレス インジケーター */
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 14px;
+            background-color: #e0e0e0;
+            color: #666;
+        }
+        
+        .step-circle.active {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .step-circle.completed {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .step-line {
+            width: 60px;
+            height: 2px;
+            background-color: #e0e0e0;
+        }
+        
+        .step-line.completed {
+            background-color: #4caf50;
+        }
+        
+        .step-text {
+            font-size: 12px;
+            color: #666;
         }
         
         /* FAB */
@@ -581,13 +723,58 @@
             <button class="tab">すべて</button>
         </div>
         
-        <!-- 割り勘リスト -->
+        <!-- 割り勘プロジェクト一覧 -->
+        <div style="margin-bottom: 15px;">
+            <h3 style="color: #666; font-size: 16px; margin-bottom: 10px;">コマンド例: @AI秘書 TASK 割り勘</h3>
+        </div>
+        
         <div class="warikan-list">
+            <!-- 新規プロジェクト作成 -->
+            <div class="warikan-item" style="border: 2px dashed #1976d2; background-color: #f8fffe;">
+                <div class="warikan-header">
+                    <div>
+                        <div class="warikan-title" style="color: #1976d2; display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons">add_circle</span>
+                            新規プロジェクト作成
+                        </div>
+                        <div class="warikan-date" style="color: #1976d2;">開発チーム（グループ名）</div>
+                    </div>
+                    <div class="warikan-amount">
+                        <div class="warikan-total" style="color: #1976d2;">準備完了</div>
+                        <div class="warikan-per-person" style="color: #666;">LIFF起動</div>
+                    </div>
+                </div>
+                <div class="warikan-participants">
+                    <div class="avatar-group">
+                        <div class="avatar" style="background-color: #1976d2; color: white;">山</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                        <div class="avatar" style="background-color: #ff9800; color: white;">佐</div>
+                        <div class="avatar" style="background-color: #9c27b0; color: white;">鈴</div>
+                        <div class="avatar">+1</div>
+                    </div>
+                    <span class="participant-count">5人検出済み</span>
+                </div>
+                <div class="warikan-status">
+                    <div class="status-chip" style="background-color: #e3f2fd; color: #1976d2;">
+                        <span class="material-icons">rocket_launch</span>
+                        すぐに開始
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 既存プロジェクト一覧 -->
+            <div style="margin: 20px 0 10px 0;">
+                <h4 style="font-size: 14px; color: #666; display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons" style="font-size: 16px;">history</span>
+                    作成済みプロジェクト（新しい順）
+                </h4>
+            </div>
+            
             <div class="warikan-item">
                 <div class="warikan-header">
                     <div>
-                        <div class="warikan-title">忘年会</div>
-                        <div class="warikan-date">2024/12/20</div>
+                        <div class="warikan-title">開発チーム ランチ会</div>
+                        <div class="warikan-date">2024/12/20 作成</div>
                     </div>
                     <div class="warikan-amount">
                         <div class="warikan-total">¥15,000</div>
@@ -619,8 +806,36 @@
             <div class="warikan-item">
                 <div class="warikan-header">
                     <div>
-                        <div class="warikan-title">ランチ会</div>
-                        <div class="warikan-date">2024/12/1</div>
+                        <div class="warikan-title">開発チーム 歓送迎会</div>
+                        <div class="warikan-date">2024/12/15 作成</div>
+                    </div>
+                    <div class="warikan-amount">
+                        <div class="warikan-total">¥8,000</div>
+                        <div class="warikan-per-person">¥2,000/人</div>
+                    </div>
+                </div>
+                <div class="warikan-participants">
+                    <div class="avatar-group">
+                        <div class="avatar" style="background-color: #1976d2; color: white;">山</div>
+                        <div class="avatar" style="background-color: #4caf50; color: white;">田</div>
+                        <div class="avatar" style="background-color: #ff9800; color: white;">佐</div>
+                        <div class="avatar" style="background-color: #9c27b0; color: white;">鈴</div>
+                    </div>
+                    <span class="participant-count">4人参加</span>
+                </div>
+                <div class="warikan-status">
+                    <div class="status-chip completed">
+                        <span class="material-icons">check_circle</span>
+                        完了
+                    </div>
+                </div>
+            </div>
+            
+            <div class="warikan-item">
+                <div class="warikan-header">
+                    <div>
+                        <div class="warikan-title">開発チーム 忘年会</div>
+                        <div class="warikan-date">2024/12/1 作成</div>
                     </div>
                     <div class="warikan-amount">
                         <div class="warikan-total">¥4,500</div>
@@ -654,7 +869,7 @@
             
             <div class="warikan-detail">
                 <div class="detail-header">
-                    <div class="detail-title">忘年会</div>
+                    <div class="detail-title">ランチ会</div>
                     <div class="detail-total">¥15,000</div>
                     <div class="detail-info">合計金額</div>
                 </div>
@@ -772,52 +987,474 @@
             </div>
         </div>
         
-        <!-- 新規作成フォームの例 -->
+        <!-- スタンプ連携デモ -->
         <div style="margin-top: 40px;">
-            <h3 style="margin-bottom: 15px; color: #666;">新規作成フォームの例：</h3>
+            <h3 style="margin-bottom: 15px; color: #666;">スタンプ連携での作成例：</h3>
+            
+            <div class="chat-simulation" style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <div class="chat-message user" style="background-color: #1976d2; color: white; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-left: auto; max-width: 80%;">
+                    <div style="text-align: center; font-size: 32px; margin: 10px 0;">💰</div>
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">14:32</div>
+                </div>
+                
+                <div class="chat-message bot" style="background-color: #f5f5f5; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-right: auto; max-width: 80%;">
+                    割り勘計算を開始します💰<br>
+                    合計金額を教えてください。
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">14:32</div>
+                </div>
+                
+                <div class="chat-message user" style="background-color: #1976d2; color: white; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-left: auto; max-width: 80%;">
+                    ランチ会 15000円
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">14:33</div>
+                </div>
+                
+                <div class="chat-message bot" style="background-color: #f5f5f5; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-right: auto; max-width: 80%;">
+                    「ランチ会」で合計¥15,000ですね！<br><br>
+                    💻 LIFF アプリで詳細設定を行います...
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">14:33</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 領収書OCR連携デモ -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">領収書OCR連携例：</h3>
+            
+            <div class="chat-simulation" style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <div class="chat-message user" style="background-color: #1976d2; color: white; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-left: auto; max-width: 80%;">
+                    <div style="text-align: center; font-size: 32px; margin: 10px 0;">💰</div>
+                    <div style="text-align: center; background-color: rgba(255,255,255,0.2); padding: 8px; border-radius: 4px; margin: 10px 0; font-size: 12px;">
+                        📄 領収書の画像
+                    </div>
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">15:20</div>
+                </div>
+                
+                <div class="chat-message bot" style="background-color: #f5f5f5; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-right: auto; max-width: 80%;">
+                    📷 領収書を解析しています...<br><br>
+                    ✅ OCR処理完了！<br>
+                    💰 金額：¥18,500 を検出<br>
+                    🏪 店名：居酒屋「さくら」<br><br>
+                    この内容で割り勘を作成しますか？
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">15:21</div>
+                </div>
+                
+                <div class="chat-message user" style="background-color: #1976d2; color: white; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-left: auto; max-width: 80%;">
+                    はい、6人で割って
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">15:21</div>
+                </div>
+                
+                <div class="chat-message bot" style="background-color: #f5f5f5; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; margin-right: auto; max-width: 80%;">
+                    ✅ 割り勘を作成しました！<br><br>
+                    📋 <strong>居酒屋「さくら」</strong><br>
+                    💰 総額：¥18,500<br>
+                    👥 6人参加<br>
+                    💸 一人あたり：<strong>¥3,084</strong><br>
+                    💸 端数調整：幹事 +¥4<br><br>
+                    📄 領収書も保存しました。
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">15:22</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ステップ1: プロジェクト作成フォーム -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">ステップ1: プロジェクト作成</h3>
             
             <div class="create-form">
-                <div class="form-group">
-                    <label>イベント名</label>
-                    <input type="text" placeholder="例：忘年会、ランチ会">
-                    <div class="helper-text">わかりやすい名前を付けてください</div>
-                </div>
-                
-                <div class="form-group">
-                    <label>合計金額</label>
-                    <input type="number" placeholder="15000">
-                    <div class="helper-text">円単位で入力してください</div>
-                </div>
-                
-                <div class="form-group">
-                    <label>参加者数</label>
-                    <select>
-                        <option value="">選択してください</option>
-                        <option value="2">2人</option>
-                        <option value="3">3人</option>
-                        <option value="4">4人</option>
-                        <option value="5">5人</option>
-                        <option value="6">6人以上</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>領収書（任意）</label>
-                    <div class="receipt-upload">
-                        <span class="material-icons">camera_alt</span>
-                        <p>領収書を撮影またはアップロード</p>
-                        <button class="button primary">
-                            画像を選択
-                        </button>
+                <div class="progress-indicator" style="margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <div class="step-circle active">1</div>
+                        <div class="step-line"></div>
+                        <div class="step-circle">2</div>
+                        <div class="step-text" style="margin-left: 12px;">プロジェクト作成 → 支払い登録</div>
                     </div>
-                    <div class="helper-text">JPEG、PNG形式（最大5MB）</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>プロジェクト名</label>
+                    <input type="text" placeholder="例：忘年会、沖縄旅行、ランチ会" value="開発チーム">
+                    <div class="helper-text">デフォルトでグループ名が設定されます</div>
+                </div>
+                
+                
+                <div class="form-group">
+                    <label>参加メンバー</label>
+                    <div class="member-management">
+                        <!-- グループメンバー自動追加 -->
+                        <div class="auto-detected-members">
+                            <h4 style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 4px;">group</span>
+                                グループメンバー（自動検出）
+                            </h4>
+                            <div class="member-list">
+                                <div class="member-item selected">
+                                    <div class="member-avatar" style="background-color: #1976d2; color: white;">山</div>
+                                    <div class="member-info">
+                                        <span class="member-name">山田太郎</span>
+                                        <span class="member-badge">幹事</span>
+                                    </div>
+                                    <input type="checkbox" checked disabled>
+                                </div>
+                                <div class="member-item selected">
+                                    <div class="member-avatar" style="background-color: #4caf50; color: white;">田</div>
+                                    <div class="member-info">
+                                        <span class="member-name">田中花子</span>
+                                        <span class="member-badge">前回参加</span>
+                                    </div>
+                                    <input type="checkbox" checked>
+                                </div>
+                                <div class="member-item selected">
+                                    <div class="member-avatar" style="background-color: #ff9800; color: white;">佐</div>
+                                    <div class="member-info">
+                                        <span class="member-name">佐藤一郎</span>
+                                        <span class="member-badge">前回参加</span>
+                                    </div>
+                                    <input type="checkbox" checked>
+                                </div>
+                                <div class="member-item">
+                                    <div class="member-avatar" style="background-color: #9c27b0; color: white;">鈴</div>
+                                    <div class="member-info">
+                                        <span class="member-name">鈴木次郎</span>
+                                        <span class="member-badge">グループメンバー</span>
+                                    </div>
+                                    <input type="checkbox">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 手動メンバー追加 -->
+                        <div class="manual-member-add">
+                            <h4 style="font-size: 14px; color: #666; margin: 20px 0 12px;">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 4px;">person_add</span>
+                                メンバーを追加
+                            </h4>
+                            <div class="add-member-form">
+                                <input type="text" placeholder="名前を入力" class="member-name-input">
+                                <button type="button" class="button outlined" style="width: auto; margin-left: 8px;">
+                                    <span class="material-icons">add</span>
+                                    追加
+                                </button>
+                            </div>
+                            
+                            <!-- 追加されたメンバー -->
+                            <div class="added-members" style="margin-top: 12px;">
+                                <div class="member-item selected">
+                                    <div class="member-avatar">高</div>
+                                    <div class="member-info">
+                                        <span class="member-name">高橋三郎</span>
+                                        <span class="member-badge">手動追加</span>
+                                    </div>
+                                    <button type="button" class="remove-button">
+                                        <span class="material-icons">close</span>
+                                    </button>
+                                </div>
+                                <div class="member-item selected">
+                                    <div class="member-avatar">伊</div>
+                                    <div class="member-info">
+                                        <span class="member-name">伊藤四郎</span>
+                                        <span class="member-badge">手動追加</span>
+                                    </div>
+                                    <button type="button" class="remove-button">
+                                        <span class="material-icons">close</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 合計人数表示 -->
+                        <div class="member-summary">
+                            <div style="background-color: #e3f2fd; padding: 12px; border-radius: 8px; margin-top: 16px;">
+                                <strong>参加者合計：5名</strong>
+                                <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                                    グループのメンバーから自動検出されました
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="helper-text">LIFF起動時にグループメンバーを自動検出します</div>
                 </div>
                 
                 <div class="action-buttons">
                     <button class="button outlined">キャンセル</button>
                     <button class="button primary">
+                        <span class="material-icons">create</span>
+                        プロジェクトを作成
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ステップ2: 支払い登録フォーム -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">ステップ2: 支払い登録</h3>
+            
+            <div class="project-header" style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h4 style="font-size: 18px; margin: 0; color: #333;">開発チーム</h4>
+                    <span class="status-chip active">
+                        <span class="material-icons">schedule</span>
+                        進行中
+                    </span>
+                </div>
+                <div style="font-size: 14px; color: #666; margin-bottom: 8px;">2024/12/20 • 参加者5名</div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="button outlined" style="font-size: 12px; padding: 6px 12px;">
+                        <span class="material-icons" style="font-size: 16px;">people</span>
+                        メンバー管理
+                    </button>
+                    <button class="button outlined" style="font-size: 12px; padding: 6px 12px;">
+                        <span class="material-icons" style="font-size: 16px;">share</span>
+                        プロジェクト共有
+                    </button>
+                </div>
+            </div>
+            
+            <div class="create-form">
+                <div class="progress-indicator" style="margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-line completed"></div>
+                        <div class="step-circle active">2</div>
+                        <div class="step-text" style="margin-left: 12px;">プロジェクト作成 → 支払い登録</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>支払い内容</label>
+                    <input type="text" placeholder="例：居酒屋代、タクシー代、お土産代" value="居酒屋「さくら」での食事代">
+                    <div class="helper-text">何に対する支払いかを入力してください</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>支払い金額</label>
+                    <input type="number" placeholder="18500" value="18500">
+                    <div class="helper-text">実際に支払った金額を入力</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>支払い者</label>
+                    <select>
+                        <option value="yamada" selected>山田太郎（私）</option>
+                        <option value="tanaka">田中花子</option>
+                        <option value="sato">佐藤一郎</option>
+                        <option value="takahashi">高橋三郎</option>
+                        <option value="ito">伊藤四郎</option>
+                    </select>
+                    <div class="helper-text">実際に支払いを行った人を選択</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>参加者</label>
+                    <div class="participant-selection">
+                        <div style="margin-bottom: 12px; font-size: 14px; color: #666;">この支払いに関わる人を選択してください</div>
+                        <div class="member-list">
+                            <div class="member-item selected">
+                                <div class="member-avatar" style="background-color: #1976d2; color: white;">山</div>
+                                <div class="member-info">
+                                    <span class="member-name">山田太郎</span>
+                                    <span class="member-badge">支払い者</span>
+                                </div>
+                                <input type="checkbox" checked disabled>
+                            </div>
+                            <div class="member-item selected">
+                                <div class="member-avatar" style="background-color: #4caf50; color: white;">田</div>
+                                <div class="member-info">
+                                    <span class="member-name">田中花子</span>
+                                    <div style="font-size: 12px; color: #666;">通常参加</div>
+                                </div>
+                                <input type="checkbox" checked>
+                            </div>
+                            <div class="member-item selected">
+                                <div class="member-avatar" style="background-color: #ff9800; color: white;">佐</div>
+                                <div class="member-info">
+                                    <span class="member-name">佐藤一郎</span>
+                                    <div style="font-size: 12px; color: #666;">通常参加</div>
+                                </div>
+                                <input type="checkbox" checked>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-avatar">高</div>
+                                <div class="member-info">
+                                    <span class="member-name">高橋三郎</span>
+                                    <div style="font-size: 12px; color: #666;">お酒なし（70%負担）</div>
+                                </div>
+                                <input type="checkbox" checked>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-avatar">伊</div>
+                                <div class="member-info">
+                                    <span class="member-name">伊藤四郎</span>
+                                    <div style="font-size: 12px; color: #666;">途中参加（50%負担）</div>
+                                </div>
+                                <input type="checkbox">
+                            </div>
+                        </div>
+                        <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px; margin-top: 12px;">
+                            <strong>計算結果:</strong>
+                            <div style="font-size: 14px; color: #666; margin-top: 4px;">
+                                • 通常参加（3名）: ¥4,625/人<br>
+                                • お酒なし（1名）: ¥3,238<br>
+                                • 不参加（1名）: ¥0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>領収書（任意）</label>
+                    <div class="receipt-upload" style="border-color: #4caf50; background-color: #f1f8e9;">
+                        <span class="material-icons" style="color: #4caf50;">check_circle</span>
+                        <p style="color: #4caf50;">領収書がアップロード済み</p>
+                        <button class="button outlined" style="border-color: #4caf50; color: #4caf50;">
+                            画像を変更
+                        </button>
+                    </div>
+                    <div class="helper-text">OCR解析済み：金額 ¥18,500、店名「居酒屋さくら」</div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="button outlined">
                         <span class="material-icons">add</span>
-                        作成して参加者を招待
+                        続けて登録
+                    </button>
+                    <button class="button primary">
+                        <span class="material-icons">save</span>
+                        支払いを登録
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- プロジェクト概要（支払い登録後の状態） -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">プロジェクト概要（支払い登録後）</h3>
+            
+            <div class="project-summary" style="background-color: white; border-radius: 8px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div class="project-header" style="margin-bottom: 24px;">
+                    <h4 style="font-size: 20px; margin: 0 0 8px 0;">開発チーム</h4>
+                    <div style="font-size: 14px; color: #666;">参加者5名 • 支払い記録3件</div>
+                </div>
+                
+                <div class="payment-summary" style="margin-bottom: 24px;">
+                    <h5 style="font-size: 16px; margin-bottom: 12px; display: flex; align-items: center;">
+                        <span class="material-icons" style="margin-right: 8px;">receipt</span>
+                        支払い記録
+                    </h5>
+                    
+                    <div class="payment-list">
+                        <div class="payment-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 8px;">
+                            <div>
+                                <div style="font-weight: 500;">居酒屋「さくら」での食事代</div>
+                                <div style="font-size: 12px; color: #666;">支払い者: 山田太郎 • 参加者4名</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-weight: 500; color: #1976d2;">¥18,500</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 8px;">
+                            <div>
+                                <div style="font-weight: 500;">タクシー代（駅→居酒屋）</div>
+                                <div style="font-size: 12px; color: #666;">支払い者: 田中花子 • 参加者5名</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-weight: 500; color: #1976d2;">¥2,000</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 8px;">
+                            <div>
+                                <div style="font-weight: 500;">2次会カラオケ代</div>
+                                <div style="font-size: 12px; color: #666;">支払い者: 佐藤一郎 • 参加者3名</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-weight: 500; color: #1976d2;">¥4,500</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
+                        <div style="font-size: 18px; font-weight: 700;">総支払額: ¥25,000</div>
+                    </div>
+                </div>
+                
+                <div class="settlement-summary">
+                    <h5 style="font-size: 16px; margin-bottom: 12px; display: flex; align-items: center;">
+                        <span class="material-icons" style="margin-right: 8px;">account_balance_wallet</span>
+                        最終清算（Walica式最適化）
+                    </h5>
+                    
+                    <div class="settlement-result" style="background-color: #e8f5e9; padding: 16px; border-radius: 8px;">
+                        <div style="margin-bottom: 12px; font-weight: 500;">💰 支払い方法（最少回数）:</div>
+                        <div style="font-size: 14px; line-height: 1.6;">
+                            • 田中花子 → 山田太郎: <strong>¥4,738</strong><br>
+                            • 高橋三郎 → 山田太郎: <strong>¥2,338</strong><br>
+                            • 伊藤四郎 → 佐藤一郎: <strong>¥1,100</strong>
+                        </div>
+                        <div style="margin-top: 12px; font-size: 12px; color: #666;">
+                            ✅ 3回の支払いで清算完了（従来方式: 8回 → 最適化: 3回）
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons" style="margin-top: 20px;">
+                    <button class="button outlined">
+                        <span class="material-icons">add</span>
+                        支払いを追加
+                    </button>
+                    <button class="button primary">
+                        <span class="material-icons">share</span>
+                        清算結果を共有
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 支払いリマインダー機能 -->
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 15px; color: #666;">リマインダー機能の例：</h3>
+            
+            <div class="warikan-detail">
+                <div class="section-title">
+                    <span class="material-icons">notifications</span>
+                    自動リマインダー設定
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span>未払いメンバーへのリマインド</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox">
+                        <span>週次での支払い状況確認</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox">
+                        <span>清算完了時の通知</span>
+                    </label>
+                </div>
+                
+                <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4 style="font-size: 14px; margin-bottom: 8px; color: #666;">リマインドメッセージ例:</h4>
+                    <div style="background-color: white; padding: 12px; border-radius: 8px; font-size: 14px; border-left: 4px solid #1976d2;">
+                        💰 <strong>割り勘の支払いリマインド</strong><br><br>
+                        開発チームの割り勘で未払いがあります<br>
+                        💰 お支払い：¥3,000<br>
+                        📋 内容：居酒屋「さくら」での食事代<br><br>
+                        支払いがお済みでない方は、お支払いをお願いします。<br>
+                        詳細はLIFFアプリで確認できます。
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="button outlined">
+                        <span class="material-icons">edit</span>
+                        メッセージ編集
+                    </button>
+                    <button class="button primary">
+                        <span class="material-icons">send</span>
+                        今すぐ送信
                     </button>
                 </div>
             </div>

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像OCR機能デモ - AI秘書TASK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: #1976d2;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-button .material-icons {
+            margin-right: 5px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .header p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .demo-overview {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-overview h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .demo-overview .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .feature-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-card .material-icons {
+            margin-right: 8px;
+            font-size: 24px;
+        }
+        
+        .demos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .demo-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sns-demo .demo-header {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .general-demo .demo-header {
+            background: linear-gradient(45deg, #2196f3 0%, #21cbf3 100%);
+        }
+        
+        .demo-header .material-icons {
+            font-size: 32px;
+            margin-right: 15px;
+        }
+        
+        .demo-header h3 {
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .demo-content {
+            padding: 20px;
+        }
+        
+        .chat-simulation {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 16px;
+            max-width: 80%;
+        }
+        
+        .chat-message.user {
+            background-color: #1976d2;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .chat-message.bot {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .chat-message .timestamp {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        
+        .image-placeholder {
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        
+        .ocr-result {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .ocr-result h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .ocr-result .material-icons {
+            margin-right: 8px;
+        }
+        
+        .ocr-stats {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 15px;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .extracted-text {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        
+        .benefits-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .benefits-section h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .benefit-item .material-icons {
+            color: #4caf50;
+            margin-right: 12px;
+            margin-top: 2px;
+        }
+        
+        .benefit-content h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .benefit-content p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .technical-details {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .technical-details h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .tech-item {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .tech-item h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tech-item .material-icons {
+            margin-right: 8px;
+        }
+        
+        .tech-item ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .tech-item li {
+            padding: 4px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .tech-item li:before {
+            content: "✓";
+            color: #4caf50;
+            margin-right: 8px;
+        }
+        
+        .cost-comparison {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .cost-table th,
+        .cost-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .cost-table th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+        
+        .free-tier {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .paid-tier {
+            color: #ff9800;
+        }
+        
+        @media (max-width: 768px) {
+            .demos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-overview .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            <span class="material-icons">arrow_back</span>
+            デモ一覧に戻る
+        </a>
+        
+        <div class="header">
+            <h1>📷 画像OCR機能デモ</h1>
+            <p>SNSスクリーンショットや画像からテキストを抽出してメモを自動作成</p>
+        </div>
+        
+        <div class="demo-overview">
+            <h2>🌟 画像OCR機能の特徴</h2>
+            <p>SNSのスクリーンショットや手書きメモ、文書画像からテキストを抽出し、AI が内容を解析して構造化されたメモを自動作成します。</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>
+                        <span class="material-icons">savings</span>
+                        コスト最適化
+                    </h3>
+                    <p>画像前処理と複数プロバイダー対応でOCRコストを最小化</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>
+                        <span class="material-icons">image_search</span>
+                        SNS特化
+                    </h3>
+                    <p>Instagram、TikTok、Twitterなどの画面レイアウトを自動検出</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>
+                        <span class="material-icons">speed</span>
+                        高速処理
+                    </h3>
+                    <p>画像最適化とキャッシュ機能で高速なテキスト抽出</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>
+                        <span class="material-icons">auto_awesome</span>
+                        AI解析
+                    </h3>
+                    <p>抽出テキストを解析して自動分類・構造化</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demos-grid">
+            <!-- SNSスクリーンショット デモ -->
+            <div class="demo-section sns-demo">
+                <div class="demo-header">
+                    <span class="material-icons">camera_alt</span>
+                    <h3>SNSスクリーンショット</h3>
+                </div>
+                
+                <div class="demo-content">
+                    <div class="chat-simulation">
+                        <div class="chat-message user">
+                            このお店行ってみたい！
+                            <div class="image-placeholder">
+                                📱 Instagram投稿のスクリーンショット
+                            </div>
+                            <div class="timestamp">14:32</div>
+                        </div>
+                        
+                        <div class="chat-message bot">
+                            📱 画像を解析しています...<br>
+                            SNSスクリーンショットを検出しました！<br><br>
+                            「Instagram グルメ: カフェ・ド・フロール」メモを作成しました！<br><br>
+                            ✨ OCR処理結果: 1枚の画像から142文字を抽出<br>
+                            💰 処理コスト: $0.0015<br><br>
+                            詳細はLIFFアプリで確認できます。
+                            <div class="timestamp">14:33</div>
+                        </div>
+                    </div>
+                    
+                    <div class="ocr-result">
+                        <h4>
+                            <span class="material-icons">visibility</span>
+                            OCR処理結果
+                        </h4>
+                        
+                        <div class="ocr-stats">
+                            <div class="stat-grid">
+                                <div class="stat-item">
+                                    <div class="stat-value">142</div>
+                                    <div class="stat-label">抽出文字数</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">95%</div>
+                                    <div class="stat-label">信頼度</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">$0.0015</div>
+                                    <div class="stat-label">処理コスト</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">1.2秒</div>
+                                    <div class="stat-label">処理時間</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h5 style="margin-bottom: 10px;">抽出されたテキスト：</h5>
+                        <div class="extracted-text">@tokyofoodie_jp
+表参道の隠れ家カフェ！
+カフェ・ド・フロール
+
+今日は表参道で見つけた素敵なカフェに行ってきました☕️✨
+フランス風の内装がとてもおしゃれで、コーヒーも本格的！
+クロワッサンが特に絶品でした🥐
+
+📍 東京都渋谷区神宮前
+⏰ 8:00-20:00
+💰 ¥1,000-2,000
+
+#表参道カフェ #フランス風 #コーヒー #クロワッサン
+❤️ 1,234  💬 45  🔄 23</div>
+                        
+                        <h5 style="margin: 20px 0 10px;">生成されたメモ構造：</h5>
+                        <div style="background-color: white; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0;">
+                            <strong>レストラン名:</strong> カフェ・ド・フロール<br>
+                            <strong>住所・アクセス:</strong> 東京都渋谷区神宮前（表参道）<br>
+                            <strong>料理ジャンル:</strong> カフェ・フレンチ<br>
+                            <strong>おすすめ料理:</strong> クロワッサン、本格コーヒー<br>
+                            <strong>価格帯:</strong> ¥1,000-2,000<br>
+                            <strong>営業時間:</strong> 8:00-20:00<br>
+                            <strong>タグ:</strong> Instagram, グルメ, 表参道カフェ, フランス風
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 一般文書 デモ -->
+            <div class="demo-section general-demo">
+                <div class="demo-header">
+                    <span class="material-icons">description</span>
+                    <h3>一般文書・手書きメモ</h3>
+                </div>
+                
+                <div class="demo-content">
+                    <div class="chat-simulation">
+                        <div class="chat-message user">
+                            会議の手書きメモをデジタル化して
+                            <div class="image-placeholder">
+                                📝 手書きの会議メモ
+                            </div>
+                            <div class="timestamp">10:15</div>
+                        </div>
+                        
+                        <div class="chat-message bot">
+                            📄 画像からテキストを抽出しています...<br><br>
+                            「プロジェクト企画会議メモ」を作成しました！<br><br>
+                            ✨ 1枚の画像から89文字を抽出<br>
+                            💰 OCR処理コスト: $0.0000（Tesseract使用）<br><br>
+                            詳細はLIFFアプリで確認できます。
+                            <div class="timestamp">10:16</div>
+                        </div>
+                    </div>
+                    
+                    <div class="ocr-result">
+                        <h4>
+                            <span class="material-icons">visibility</span>
+                            OCR処理結果
+                        </h4>
+                        
+                        <div class="ocr-stats">
+                            <div class="stat-grid">
+                                <div class="stat-item">
+                                    <div class="stat-value">89</div>
+                                    <div class="stat-label">抽出文字数</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">87%</div>
+                                    <div class="stat-label">信頼度</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">FREE</div>
+                                    <div class="stat-label">処理コスト</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">2.8秒</div>
+                                    <div class="stat-label">処理時間</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h5 style="margin-bottom: 10px;">抽出されたテキスト：</h5>
+                        <div class="extracted-text">プロジェクト企画会議
+2024/12/1 14:00
+
+参加者:
+- 田中部長
+- 佐藤さん
+- 山田さん
+
+議題:
+1. 新機能の要件定義
+2. スケジュール確認
+3. 予算の検討
+
+決定事項:
+- 来週までにプロトタイプ作成
+- 予算は300万円で承認
+- 次回会議: 12/8 (金)</div>
+                        
+                        <h5 style="margin: 20px 0 10px;">AI解析結果：</h5>
+                        <div style="background-color: white; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0;">
+                            <strong>会議名:</strong> プロジェクト企画会議<br>
+                            <strong>日時:</strong> 2024/12/1 14:00<br>
+                            <strong>参加者:</strong> 田中部長、佐藤さん、山田さん<br>
+                            <strong>重要なポイント:</strong><br>
+                            1. 来週までにプロトタイプ作成<br>
+                            2. 予算300万円で承認<br>
+                            3. 次回会議は12/8(金)<br>
+                            <strong>タグ:</strong> 会議, プロジェクト, 企画, OCR作成
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="benefits-section">
+            <h3>🎯 画像OCR機能のメリット</h3>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <span class="material-icons">save_alt</span>
+                    <div class="benefit-content">
+                        <h4>手入力の削減</h4>
+                        <p>画像をアップロードするだけで自動的にテキスト化。手動入力の時間を大幅に短縮。</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <span class="material-icons">trending_down</span>
+                    <div class="benefit-content">
+                        <h4>コスト最適化</h4>
+                        <p>画像前処理とプロバイダー選択により、OCR処理コストを最大80%削減。</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <span class="material-icons">smartphone</span>
+                    <div class="benefit-content">
+                        <h4>SNS活用</h4>
+                        <p>インスタやTikTokのスクリーンショットから「行きたい場所」「食べたいお店」リストを作成。</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <span class="material-icons">auto_fix_high</span>
+                    <div class="benefit-content">
+                        <h4>AI後処理</h4>
+                        <p>抽出したテキストをAIが解析して自動分類・構造化。意味のある情報として整理。</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <span class="material-icons">memory</span>
+                    <div class="benefit-content">
+                        <h4>キャッシュ機能</h4>
+                        <p>同じ画像の重複処理を避けるキャッシュ機能で、処理時間とコストを削減。</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <span class="material-icons">verified</span>
+                    <div class="benefit-content">
+                        <h4>高精度処理</h4>
+                        <p>複数のOCR APIを使い分けて、画像の種類に応じた最適な精度を実現。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cost-comparison">
+            <h3>💰 OCRプロバイダー比較</h3>
+            <p>コストと精度のバランスを考慮して最適なプロバイダーを自動選択します。</p>
+            
+            <table class="cost-table">
+                <thead>
+                    <tr>
+                        <th>プロバイダー</th>
+                        <th>1000枚あたりのコスト</th>
+                        <th>精度</th>
+                        <th>特徴</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tesseract.js</strong></td>
+                        <td class="free-tier">無料</td>
+                        <td>85%</td>
+                        <td>オープンソース、オフライン処理可能</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Azure Computer Vision</strong></td>
+                        <td class="paid-tier">$1.00</td>
+                        <td>93%</td>
+                        <td>日本語対応良好、リーズナブル</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Google Vision API</strong></td>
+                        <td class="paid-tier">$1.50</td>
+                        <td>95%</td>
+                        <td>最高精度、多言語対応</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AWS Textract</strong></td>
+                        <td class="paid-tier">$1.50</td>
+                        <td>92%</td>
+                        <td>表・フォーム認識に特化</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="technical-details">
+            <h3>⚙️ 技術仕様</h3>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h4>
+                        <span class="material-icons">image</span>
+                        画像前処理
+                    </h4>
+                    <ul>
+                        <li>解像度最適化（最大2048px）</li>
+                        <li>グレースケール変換</li>
+                        <li>コントラスト強化</li>
+                        <li>シャープ化処理</li>
+                        <li>ノイズ除去</li>
+                        <li>SNS UI領域の除外</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-item">
+                    <h4>
+                        <span class="material-icons">phonelink</span>
+                        SNS対応
+                    </h4>
+                    <ul>
+                        <li>Instagram Stories (9:16)</li>
+                        <li>TikTok動画 (9:16)</li>
+                        <li>Twitter投稿 (1.91:1)</li>
+                        <li>YouTube動画 (16:9)</li>
+                        <li>Facebook投稿</li>
+                        <li>一般的なスクリーンショット</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-item">
+                    <h4>
+                        <span class="material-icons">smart_toy</span>
+                        AI処理
+                    </h4>
+                    <ul>
+                        <li>SNSコンテンツ自動判定</li>
+                        <li>テキスト内容の分類</li>
+                        <li>重要情報の抽出</li>
+                        <li>構造化データ生成</li>
+                        <li>タグ自動生成</li>
+                        <li>要約作成</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-item">
+                    <h4>
+                        <span class="material-icons">security</span>
+                        セキュリティ
+                    </h4>
+                    <ul>
+                        <li>画像データの即座削除</li>
+                        <li>テキストのみ保存</li>
+                        <li>APIキーの安全な管理</li>
+                        <li>処理ログの記録</li>
+                        <li>プライバシー保護</li>
+                        <li>GDPR準拠</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

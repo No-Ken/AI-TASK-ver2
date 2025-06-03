@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メモ機能比較 - 個人メモ vs グループメモ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: #1976d2;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-button .material-icons {
+            margin-right: 5px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .header p {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .memo-type {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .memo-header {
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        
+        .personal-header {
+            background-color: #2196f3;
+        }
+        
+        .group-header {
+            background-color: #4caf50;
+        }
+        
+        .memo-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .memo-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .section {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .chat-example {
+            background-color: #e7f3ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .chat-message {
+            background-color: white;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .chat-message.user {
+            background-color: #dcf8c6;
+            margin-left: 40px;
+        }
+        
+        .chat-message.bot {
+            background-color: white;
+            margin-right: 40px;
+        }
+        
+        .message-info {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .feature-list .material-icons {
+            color: #4caf50;
+            margin-right: 8px;
+            font-size: 20px;
+        }
+        
+        .feature-list .not-available {
+            color: #ccc;
+        }
+        
+        .memo-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .memo-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .memo-card-title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .memo-card-meta {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: #e0e0e0;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+        
+        .tag.ai {
+            background-color: #f3e5f5;
+            color: #9c27b0;
+        }
+        
+        .editors {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #1976d2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .template-section {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .template-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .template-field {
+            background-color: white;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .comparison-table {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        
+        .comparison-table h3 {
+            padding: 20px;
+            background-color: #f5f5f5;
+            margin: 0;
+            font-size: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        th {
+            background-color: #fafafa;
+            font-weight: 500;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .check {
+            color: #4caf50;
+        }
+        
+        .cross {
+            color: #f44336;
+        }
+        
+        .highlight {
+            background-color: #fff8e1;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            <span class="material-icons">arrow_back</span>
+            デモ一覧に戻る
+        </a>
+        
+        <div class="header">
+            <h1>メモ機能比較</h1>
+            <p>個人メモとグループメモの違いを詳しく解説します</p>
+        </div>
+        
+        <div class="comparison-grid">
+            <!-- 個人メモ -->
+            <div class="memo-type">
+                <div class="memo-header personal-header">
+                    <span class="material-icons" style="font-size: 48px; margin-bottom: 10px;">person</span>
+                    <h2>個人メモ</h2>
+                    <p>個人チャットから作成</p>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">作成方法</h3>
+                    <div class="chat-example">
+                        <div class="message-info">LINE公式アカウントとの個人チャット</div>
+                        <div class="chat-message user">
+                            @メモ 明日の買い物リスト<br>
+                            - 牛乳 2本<br>
+                            - パン<br>
+                            - 卵 1パック
+                        </div>
+                        <div class="chat-message bot">
+                            個人メモ「明日の買い物リスト」を作成しました！<br><br>
+                            詳細はLIFFアプリで確認できます。
+                        </div>
+                    </div>
+                    <p style="font-size: 14px; color: #666;">
+                        または「メモして」「記録して」などの自然な表現でもOK
+                    </p>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">主な機能</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>豊富なテンプレート（日記・アイデア・買い物・健康・学習）</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>タグによる分類・検索</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>AI要約機能（長文メモ）</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>アーカイブ機能</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>階層構造（ページ管理）</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>プライベートな内容を安全に保存</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">メモの例</h3>
+                    
+                    <div class="template-section">
+                        <div class="template-title">📝 日記テンプレート使用例</div>
+                        <div class="template-field"><strong>日付：</strong>2024年12月1日</div>
+                        <div class="template-field"><strong>天気：</strong>晴れ</div>
+                        <div class="template-field"><strong>今日の出来事：</strong>新しいプロジェクトがスタート</div>
+                        <div class="template-field"><strong>感謝したこと：</strong>チームの協力</div>
+                    </div>
+                    
+                    <div class="memo-card">
+                        <div class="memo-card-header">
+                            <div>
+                                <div class="memo-card-title">買い物リスト（スーパー）</div>
+                                <div class="memo-card-meta">2024/12/1 14:30（個人チャット・買い物テンプレート）</div>
+                            </div>
+                        </div>
+                        <div class="tags">
+                            <span class="tag">買い物</span>
+                            <span class="tag">日常</span>
+                            <span class="tag" style="background-color: #fff3e0; color: #f57c00;">テンプレート</span>
+                        </div>
+                    </div>
+                    
+                    <div class="memo-card">
+                        <div class="memo-card-header">
+                            <div>
+                                <div class="memo-card-title">新機能のアイデア</div>
+                                <div class="memo-card-meta">2024/12/1 09:00（個人チャット・アイデアテンプレート）</div>
+                            </div>
+                        </div>
+                        <div class="tags">
+                            <span class="tag">アイデア</span>
+                            <span class="tag">仕事</span>
+                            <span class="tag ai">
+                                <span class="material-icons" style="font-size: 16px; margin-right: 4px;">auto_awesome</span>
+                                AI要約あり
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- グループメモ -->
+            <div class="memo-type">
+                <div class="memo-header group-header">
+                    <span class="material-icons" style="font-size: 48px; margin-bottom: 10px;">group</span>
+                    <h2>グループメモ（共有メモ）</h2>
+                    <p>グループチャットから作成</p>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">作成方法</h3>
+                    <div class="chat-example">
+                        <div class="message-info">グループチャット「開発チーム」</div>
+                        <div class="chat-message user">
+                            <div class="message-info">田中: </div>
+                            @メモ 12月定例会議<br>
+                            議題：新機能の仕様確認<br>
+                            決定事項：12/20リリース予定
+                        </div>
+                        <div class="chat-message bot">
+                            共有メモ「12月定例会議」を作成しました！<br><br>
+                            詳細はLIFFアプリで確認できます。
+                        </div>
+                    </div>
+                    <p style="font-size: 14px; color: #666;">
+                        グループ内で自動的に共有されます
+                    </p>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">主な機能</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>複数人での編集・閲覧権限</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>豊富なテンプレート（37種類：会議・イベント・プロジェクト・勉強会・旅行・パーティー・ブレスト・研修・面接・語学交流・チームビルディング・ワークショップなど）</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>編集履歴・最終編集者の記録</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">check_circle</span>
+                            <span>リアルタイムコラボレーション</span>
+                        </li>
+                        <li>
+                            <span class="material-icons not-available">cancel</span>
+                            <span style="color: #999;">個人タグ機能なし</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">メモの例</h3>
+                    
+                    <div class="template-section">
+                        <div class="template-title">🗓️ 会議テンプレート使用例</div>
+                        <div class="template-field"><strong>日時：</strong>2024年12月15日 10:00-11:30</div>
+                        <div class="template-field"><strong>参加者：</strong>山田、田中、佐藤、鈴木</div>
+                        <div class="template-field"><strong>決定事項：</strong>新機能を12/20にリリース</div>
+                    </div>
+                    
+                    <div class="template-section">
+                        <div class="template-title">🎉 パーティーテンプレート使用例</div>
+                        <div class="template-field"><strong>目的：</strong>忘年会</div>
+                        <div class="template-field"><strong>会場：</strong>都内レストラン</div>
+                        <div class="template-field"><strong>参加人数：</strong>15人</div>
+                        <div class="template-field"><strong>料理：</strong>コース料理、飲み放題</div>
+                    </div>
+                    
+                    <div class="template-section">
+                        <div class="template-title">📊 プロジェクトテンプレート使用例</div>
+                        <div class="template-field"><strong>プロジェクト名：</strong>新サービス開発</div>
+                        <div class="template-field"><strong>チーム：</strong>開発部、5名</div>
+                        <div class="template-field"><strong>目標：</strong>Q1リリース、ユーザー数100万人</div>
+                    </div>
+                    
+                    <div class="template-section">
+                        <div class="template-title">🌿 旅行テンプレート使用例</div>
+                        <div class="template-field"><strong>目的地：</strong>京都</div>
+                        <div class="template-field"><strong>日程：</strong>12月23日～25日（2泊3日）</div>
+                        <div class="template-field"><strong>一人当たり予算：</strong>30,000円</div>
+                    </div>
+                    
+                    <div class="template-section">
+                        <div class="template-title">☕ デイリースタンドアップテンプレート使用例</div>
+                        <div class="template-field"><strong>Sprint：</strong>Sprint 12</div>
+                        <div class="template-field"><strong>昨日完了：</strong>ユーザー認証機能、APIレビュー</div>
+                        <div class="template-field"><strong>今日予定：</strong>DB設計、フロント実装</div>
+                        <div class="template-field"><strong>ブロッカー：</strong>外部API仕様待ち</div>
+                    </div>
+                    
+                    <div class="template-section">
+                        <div class="template-title">📚 勉強会テンプレート使用例</div>
+                        <div class="template-field"><strong>テーマ：</strong>React Hooks入門</div>
+                        <div class="template-field"><strong>ファシリテーター：</strong>山田さん</div>
+                        <div class="template-field"><strong>参加者：</strong>8名</div>
+                        <div class="template-field"><strong>学習目標：</strong>useState、useEffectの理解</div>
+                    </div>
+                    
+                    <div class="template-section">
+                        <div class="template-title">🌍 語学交流テンプレート使用例</div>
+                        <div class="template-field"><strong>対象言語：</strong>英語、韓国語、中国語</div>
+                        <div class="template-field"><strong>ネイティブスピーカー：</strong>3名参加予定</div>
+                        <div class="template-field"><strong>会話トピック：</strong>旅行、文化、食べ物</div>
+                        <div class="template-field"><strong>語学ゲーム：</strong>単語当てクイズ、しりとり</div>
+                    </div>
+                    
+                    <div class="template-section">
+                        <div class="template-title">🤝 チームビルディングテンプレート使用例</div>
+                        <div class="template-field"><strong>目的：</strong>新チームの結束強化</div>
+                        <div class="template-field"><strong>場所：</strong>お台場チームラボ</div>
+                        <div class="template-field"><strong>アクティビティ：</strong>謎解きゲーム、グループワーク</div>
+                        <div class="template-field"><strong>成果指標：</strong>チーム満足度調査</div>
+                    </div>
+                    
+                    <div class="memo-card">
+                        <div class="memo-card-header">
+                            <div>
+                                <div class="memo-card-title">忘年会の計画</div>
+                                <div class="memo-card-meta">2024/12/1 15:00（グループ：営業部・パーティーテンプレート）</div>
+                            </div>
+                        </div>
+                        <div class="editors">
+                            <span style="font-size: 12px; color: #666;">編集メンバー：</span>
+                            <div class="avatar">山</div>
+                            <div class="avatar" style="background-color: #4caf50;">田</div>
+                            <div class="avatar" style="background-color: #ff9800;">佐</div>
+                            <span style="font-size: 12px;">+2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 機能比較表 -->
+        <div class="comparison-table">
+            <h3>機能比較表</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>機能</th>
+                        <th>個人メモ</th>
+                        <th>グループメモ（共有メモ）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>作成場所</td>
+                        <td><span class="highlight">個人チャット</span></td>
+                        <td><span class="highlight">グループチャット</span></td>
+                    </tr>
+                    <tr>
+                        <td>閲覧権限</td>
+                        <td>本人のみ</td>
+                        <td>グループメンバー全員</td>
+                    </tr>
+                    <tr>
+                        <td>編集権限</td>
+                        <td>本人のみ</td>
+                        <td>指定されたメンバー</td>
+                    </tr>
+                    <tr>
+                        <td>タグ機能</td>
+                        <td><span class="material-icons check">check</span> あり</td>
+                        <td><span class="material-icons cross">close</span> なし</td>
+                    </tr>
+                    <tr>
+                        <td>AI要約</td>
+                        <td><span class="material-icons check">check</span> あり</td>
+                        <td><span class="material-icons cross">close</span> なし</td>
+                    </tr>
+                    <tr>
+                        <td>テンプレート</td>
+                        <td><span class="material-icons check">check</span> ビジネス：会議・プロジェクト・タスク・アイデア・クライアント・レポート<br>プライベート：日記・買い物・健康・学習・アイデア・旅行</td>
+                        <td><span class="material-icons check">check</span> 37種類：会議・プロジェクト・ブレスト・研修・面接・プレゼン・イベント・ワークショップ・セミナー・ネットワーキング・パーティー・チームビルディング・勉強会・語学交流・旅行・お出かけ・食事会・趣味会・スポーツ・ボランティア・家族イベント・誕生日・結婚式・緊急対応・メンテナンス・健康安全・予算計画など</td>
+                    </tr>
+                    <tr>
+                        <td>アーカイブ</td>
+                        <td><span class="material-icons check">check</span> 可能</td>
+                        <td><span class="material-icons check">check</span> ステータス管理</td>
+                    </tr>
+                    <tr>
+                        <td>階層構造</td>
+                        <td><span class="material-icons check">check</span> ページ管理</td>
+                        <td><span class="material-icons cross">close</span> なし</td>
+                    </tr>
+                    <tr>
+                        <td>編集履歴</td>
+                        <td><span class="material-icons cross">close</span> なし</td>
+                        <td><span class="material-icons check">check</span> 最終編集者記録</td>
+                    </tr>
+                    <tr>
+                        <td>リアルタイム編集</td>
+                        <td><span class="material-icons cross">close</span> なし</td>
+                        <td><span class="material-icons check">check</span> 対応</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 使い分けガイド -->
+        <div class="comparison-table">
+            <h3>使い分けガイド</h3>
+            <div style="padding: 20px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h4 style="color: #2196f3; margin-bottom: 10px;">個人メモが適している場合</h4>
+                        <ul style="list-style-type: disc; margin-left: 20px; line-height: 1.8;">
+                            <li>プライベートな内容を記録したい</li>
+                            <li>日記や健康記録などの定期的な記録</li>
+                            <li>買い物リストや学習記録の管理</li>
+                            <li>アイデアの整理と発展</li>
+                            <li>タグで細かく分類管理したい</li>
+                            <li>長文の内容をAI要約したい</li>
+                            <li>階層的に情報を整理したい</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #4caf50; margin-bottom: 10px;">グループメモが適している場合</h4>
+                        <ul style="list-style-type: disc; margin-left: 20px; line-height: 1.8;">
+                            <li>チームで情報を共有したい</li>
+                            <li>会議の議事録を作成したい</li>
+                            <li>複数人で編集・更新したい</li>
+                            <li>テンプレートを活用したい</li>
+                            <li>グループの活動記録を残したい</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
